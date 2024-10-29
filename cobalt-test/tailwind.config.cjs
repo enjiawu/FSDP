@@ -27,7 +27,7 @@ module.exports = {
         },
         red: {
           ...colors.red,
-          DEFAULT: '#FB5454',
+          DEFAULT: '#ED1C24',
         },
         body: '#64748B',
         bodydark: '#AEB7C0',
@@ -75,6 +75,8 @@ module.exports = {
         'title-md2': ['26px', '30px'],
         'title-sm': ['20px', '26px'],
         'title-xsm': ['18px', '24px'],
+        'title-xs': '12px',
+        'title-xxs': '9px',
       },
       spacing: {
         4.5: '1.125rem',
