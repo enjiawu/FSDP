@@ -29,6 +29,7 @@ module.exports = {
           ...colors.red,
           DEFAULT: '#ED1C24',
         },
+        red2: '#FF6865',
         body: '#64748B',
         bodydark: '#AEB7C0',
         bodydark1: '#DEE4EE',
