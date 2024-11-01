@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
 import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
-import LogoIcon from '../../images/logo/logo-icon.png';
 import DarkModeSwitcher from './DarkModeSwitcher';
+import Logo from '../../images/logo/logo-icon.png';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const isDashboardPath = window.location.pathname.includes('/dashboard/') || window.location.pathname.includes('/dashboard-testcases/') || window.location.pathname.includes('/dashboard-history/');
+
   return (
     <header className="sticky top-0 z-999 flex w-full bg-gray drop-shadow-1 dark:bg-black dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -55,9 +57,24 @@ const Header = (props: {
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
 
-          <Link className="block flex-shrink-0 lg:hidden max-w-20" to="/">
-            <img src={LogoIcon} alt="Logo" />
-          </Link>
+          {isDashboardPath ? (
+            <>
+              <span className="text-md font-bold">Application Name</span>
+              <Link className="text-button text-sm" to="/dashboard/dashboard1">
+                Dashboard
+              </Link>
+              <Link className="text-button text-sm" to="/dashboard-testcases/1">
+                Test Cases
+              </Link>
+              <Link className="text-button text-sm" to="/dashboard-history/1">
+                History
+              </Link>
+            </>
+          ) : (
+            <Link className="block flex-shrink-0 lg:hidden max-w-20" to="/">
+              <img src={Logo} alt="Logo" />
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">

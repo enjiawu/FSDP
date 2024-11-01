@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import OCBCLogo from '../../images/logo/ocbc-logo.png';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.png';
@@ -11,6 +11,7 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { pathname } = location;
 
   const trigger = useRef<any>(null);
@@ -98,22 +99,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-3">
             {/* <!-- Menu Item Dashboard --> */}
             <SidebarLinkGroup
-              activeCondition={pathname === '/' || pathname.includes('dashboard')}
-            >
-              {(handleClick, open) => {
-                return (
-                  <React.Fragment>
-                    <NavLink
-                      to="#"
-                      className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium 
-                        ${pathname === '/' || pathname.includes('dashboard') ? 'bg-red text-white' : 'text-black hover:bg-red hover:text-white'} 
-                        duration-300 ease-in-out dark:text-white dark:hover:bg-red`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-                      }}
-                    >
-                      <svg
+                activeCondition={pathname === '/' || pathname.includes('dashboard')}
+
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="/dashboards"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium 
+                          ${pathname === '/dashboards' || pathname.includes('dashboard') ? 'bg-red text-white' : 'text-black hover:bg-red hover:text-white'} 
+                          duration-300 ease-in-out dark:text-white dark:hover:bg-red`}
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent default link behavior
+                          if ((e.target as Element).closest('.arrow')) {
+                            handleClick(); // Only handle click for dropdown if the arrow is clicked
+                          } else {
+                            // Redirect to the dashboard page
+                            navigate('/dashboard');
+                            setSidebarExpanded(true); // Open sidebar if it was closed
+                          }
+                        }}
+                      >
+                         <svg
                         className="fill-current"
                         width="18"
                         height="18"
@@ -126,59 +134,47 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <path d="M6.10322 9.92822H2.53135C1.5751 9.92822 0.787598 10.7157 0.787598 11.672V15.2438C0.787598 16.2001 1.5751 16.9876 2.53135 16.9876H6.10322C7.05947 16.9876 7.84697 16.2001 7.84697 15.2438V11.7001C7.8751 10.7157 7.0876 9.92822 6.10322 9.92822ZM6.60947 15.272C6.60947 15.5532 6.38447 15.7782 6.10322 15.7782H2.53135C2.2501 15.7782 2.0251 15.5532 2.0251 15.272V11.7001C2.0251 11.4188 2.2501 11.1938 2.53135 11.1938H6.10322C6.38447 11.1938 6.60947 11.4188 6.60947 11.7001V15.272Z" />
                         <path d="M15.4689 9.92822H11.8971C10.9408 9.92822 10.1533 10.7157 10.1533 11.672V15.2438C10.1533 16.2001 10.9408 16.9876 11.8971 16.9876H15.4689C16.4252 16.9876 17.2127 16.2001 17.2127 15.2438V11.7001C17.2127 10.7157 16.4252 9.92822 15.4689 9.92822ZM15.9752 15.272C15.9752 15.5532 15.7502 15.7782 15.4689 15.7782H11.8971C11.6158 15.7782 11.3908 15.5532 11.3908 15.272V11.7001C11.3908 11.4188 11.6158 11.1938 11.8971 11.1938H15.4689C15.7502 11.1938 15.9752 11.4188 15.9752 11.7001V15.272Z" />
                       </svg>
-                      Dashboard
-                      <svg
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open ? 'rotate-180' : ''}`}
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                        />
-                      </svg>
-                    </NavLink>
-                    {/* <!-- Dropdown Menu Start --> */}
-                    <div className={`translate transform overflow-hidden ${!open ? 'hidden' : ''}`}>
-                      <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                        <li>
-                          <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                              `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
-                              ${isActive ? 'bg-red2 text-white' : 'text-black hover:bg-red2 dark:text-white hover:text-white'}`}
-                          >
-                            Dashboard 1
-                          </NavLink>
-                        </li>
-                        <li>
-                          <NavLink
-                            to="/dashboard2"
-                            className={({ isActive }) =>
-                              `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
-                              ${isActive ? 'bg-red2 text-white' : 'text-black hover:text-white hover:bg-red2 dark:text-white'}`}
-                          >
-                            Dashboard 2
-                          </NavLink>
-                        </li>
-                      </ul>
-                    </div>
-                  </React.Fragment>
-                );
-              }}
-            </SidebarLinkGroup>
-
+                      Dashboards
+                      <span className="ml-auto arrow cursor-pointer">
+                        {open ? '▼' : '▲'} 
+                      </span>
+                      </NavLink>
+                      <div className={`translate transform overflow-hidden ${!open ? 'hidden' : ''}`}>
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/dashbord/dashboard1"
+                              className={({ isActive }) =>
+                                `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
+                                ${isActive ? 'bg-red2 text-white' : 'text-black hover:bg-red2 dark:text-white hover:text-white'}`}
+                            >
+                              Dashboard 1
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/dashboard2"
+                              className={({ isActive }) =>
+                                `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
+                                ${isActive ? 'bg-red2 text-white' : 'text-black hover:text-white hover:bg-red2 dark:text-white'}`}
+                            >
+                              Dashboard 2
+                            </NavLink>
+                          </li>
+                          </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* <!-- End Menu Item Dashboard --> */}
 
               {/* <!-- Menu Item Test Cases --> */}
               <li>
                 <NavLink
                   to="/test-cases"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('test-cases') || pathname === '/test-cases' ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
+                    ${pathname.includes('/test-cases') ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
                     dark:text-white dark:hover:bg-red`}        
                 >
                    <svg
@@ -198,10 +194,62 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  Test Cases
+                  All Test Cases
                 </NavLink>
               </li>
               {/* <!-- Menu Item Test Cases --> */}
+
+                            {/* <!-- Menu Item Applications --> */}
+                            <li>
+                <NavLink
+                  to="/applications"
+                  className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
+                    ${pathname.includes('applications') || pathname === '/applications' ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
+                    dark:text-white dark:hover:bg-red`}
+                >
+                  <svg
+                    className="fill-current"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                      fill=""
+                    />
+                  </svg>
+                  All Applications
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Applications --> */}
+
+              {/* <!-- Menu Item History --> */}
+              <li>
+                <NavLink
+                  to="/history"
+                  className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
+                    ${pathname.includes('/history') ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
+                    dark:text-white dark:hover:bg-red`}
+                >
+                  <svg
+                    className="fill-current"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 8V12L15 15L16.5 13.5L14 11V8H12ZM12 2C6.48 2 2 6.48 2 12H0L4 16L8 12H6C6 7.58 9.58 4 14 4C18.42 4 22 7.58 22 12C22 16.42 18.42 20 14 20C10.69 20 7.83 18.36 6.35 15.9L4.9 17.35C6.73 20.08 9.97 22 14 22C19.52 22 24 17.52 24 12C24 6.48 19.52 2 14 2H12Z"
+                      fill=""
+                    />
+                  </svg>
+                  All History
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item History --> */}
 
               {/* <!-- Menu Item Settings --> */}
               <li>
