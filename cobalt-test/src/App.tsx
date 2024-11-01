@@ -4,7 +4,6 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -130,15 +129,6 @@ function App() {
             <>
               <PageTitle title="Signin | CobaltTest - OCBC Automated Testing" />
               <SignIn />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signup"
-          element={
-            <>
-              <PageTitle title="Signup | CobaltTest - OCBC Automated Testing" />
-              <SignUp />
             </>
           }
         />
