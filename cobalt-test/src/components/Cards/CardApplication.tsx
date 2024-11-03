@@ -42,7 +42,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
           </p>
 
           {/* Add to Favourites button */}
-          <button onClick={onToggleFavorite} className="flex items-center justify-center mt-2 bg-primary text-white text-sm font-bold py-2 rounded-md hover:bg-primary-600 transition">
+          <button onClick={onToggleFavorite} className="flex items-center justify-center mt-2 bg-primary text-white text-sm font-bold py-2 rounded-md hover:bg-primary-600 transition hover:bg-secondary">
             {isFavorite ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

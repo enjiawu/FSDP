@@ -26,7 +26,7 @@ const DropdownSortBy: React.FC<DropdownSortByProps> = ({ value, onChange, option
   return (
     <div className="relative">
       <div 
-        className="border rounded-md p-2 px-4 w-30 cursor-pointer bg-white flex items-center justify-between dark:bg-black dark:text-white "
+        className="border rounded-md p-2 px-4 w-auto cursor-pointer bg-white flex items-center justify-between dark:bg-black dark:text-white "
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{selectedLabel}</span> {/* Show "Sort by" if no value is selected */}

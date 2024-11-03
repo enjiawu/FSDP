@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../css/table.css';
+import '../../css/general.css';
 import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 
 // Define the interface for a test case
@@ -84,13 +84,6 @@ const testCases: TestCase[] = [
   },
 ];
 
-const statusOptions = [
-  { value: 'All', label: 'All' },
-  { value: 'Passed', label: 'Passed' },
-  { value: 'Failed', label: 'Failed' },
-  { value: 'Pending', label: 'Pending' },
-];
-
 const TestCaseTable = () => {
   const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
@@ -137,14 +130,14 @@ const TestCaseTable = () => {
   };
 
   return (
-    <div className="rounded-md bg-white p-6 shadow-md">
+    <div className="rounded-md bg-white p-6 shadow-md dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4">
         <div 
           className="relative" 
           onMouseEnter={(e) => showTooltip(e, "Test cases are sorted by the sequence of execution, from first to last.")}
           onMouseLeave={hideTooltip}
         >
-          <h2 className="text-xl font-semibold">Test Case Status</h2>
+          <h2 className="text-xl font-semibold dark:text-white">Test Case Status</h2>
         </div>
         <div className="flex items-center">
             <div className="relative mr-4">
@@ -167,80 +160,83 @@ const TestCaseTable = () => {
               <input
                 type="text"
                 placeholder="Search Test Cases..."
-                className="border border-gray-400 rounded p-2 pl-10 pr-15"
+                className="border border-gray-400 rounded p-2 pl-10 pr-15 dark:bg-black dark:text-white"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           <DropdownSortBy 
             value={filter}
             onChange={(value) => setFilter(value as 'Passed' | 'Failed' | 'Pending' | 'All')}
-            options={statusOptions}
+            options={
+              [{ value: 'All', label: 'All' },
+                { value: 'Passed', label: 'Passed' },
+                { value: 'Failed', label: 'Failed' },
+                { value: 'Pending', label: 'Pending' },]
+            }
           />
         </div>
       </div>
 
-      <div className="overflow-auto h-100">
-        <div className="max-w-full overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">ID</th>
-                <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white">Test Case</th>
-                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">Description</th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Time Taken (s)</th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Status</th>
+      <div className="max-w-full overflow-x-auto overflow-auto h-100">
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="bg-gray-2 text-left dark:bg-meta-4">
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">ID</th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white">Test Case</th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">Description</th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Time Taken (s)</th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredTestCases.map((testCase) => (
+              <tr key={testCase.id}>
+                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                  <h5 className="font-medium text-black dark:text-white">{testCase.id}</h5>
+                </td>
+                <td
+                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
+                  onClick={() => handleDescriptionClick(testCase)} // Open modal on click
+                >
+                  {testCase.title}
+                </td>
+                <td
+                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer"
+                  onMouseEnter={(e) => showTooltip(e, testCase.description)}
+                  onMouseLeave={hideTooltip}
+                >
+                  <div className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {testCase.description.length > 50
+                      ? `${testCase.description.substring(0, 50)}...`
+                      : testCase.description}
+                  </div>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">{testCase.timeTaken}</p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      testCase.status === 'Passed'
+                        ? 'bg-success text-success'
+                        : testCase.status === 'Failed'
+                        ? 'bg-danger text-danger'
+                        : 'bg-warning text-warning'
+                    }`}
+                  >
+                    {testCase.status}
+                  </p>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredTestCases.map((testCase) => (
-                <tr key={testCase.id}>
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                    <h5 className="font-medium text-black dark:text-white">{testCase.id}</h5>
-                  </td>
-                  <td
-                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
-                    onClick={() => handleDescriptionClick(testCase)} // Open modal on click
-                  >
-                    {testCase.title}
-                  </td>
-                  <td
-                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer"
-                    onMouseEnter={(e) => showTooltip(e, testCase.description)}
-                    onMouseLeave={hideTooltip}
-                  >
-                    <div className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
-                      {testCase.description.length > 50
-                        ? `${testCase.description.substring(0, 50)}...`
-                        : testCase.description}
-                    </div>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">{testCase.timeTaken}</p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p
-                      className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                        testCase.status === 'Passed'
-                          ? 'bg-success text-success'
-                          : testCase.status === 'Failed'
-                          ? 'bg-danger text-danger'
-                          : 'bg-warning text-warning'
-                      }`}
-                    >
-                      {testCase.status}
-                    </p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Tooltip */}
       {tooltipVisible && tooltipContent && (
         <div
-          className="absolute bg-black text-white text-sm rounded p-2"
+          className="absolute bg-black text-white text-sm rounded p-2 dark:bg-slate-500 dark:border-strokedark"
           style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
         >
           {tooltipContent}
@@ -255,7 +251,7 @@ const TestCaseTable = () => {
             <p>{modalContent.description}</p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
-            <button className="mt-2 bg-primary text-white rounded px-4 py-2" onClick={closeModal}>Close</button>
+            <button className="mt-2 bg-primary text-white rounded px-4 py-2 hover:bg-secondary" onClick={closeModal}>Close</button>
           </div>
         </div>
       )}

@@ -6,6 +6,7 @@ import Logo from '../../images/logo/logo-icon.png';
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
+  appName: string; 
 }) => {
   const isDashboardPath = window.location.pathname.includes('/dashboards/') || window.location.pathname.includes('/dashboard-testcases/') || window.location.pathname.includes('/dashboard-history/');
 
@@ -13,7 +14,7 @@ const Header = (props: {
     <header className="sticky top-0 z-999 flex w-full bg-gray drop-shadow-1 dark:bg-black dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* <!-- Hamburger Toggle BTN --> */}
+          {/* Hamburger Toggle Button */}
           <button
             aria-controls="sidebar"
             onClick={(e) => {
@@ -54,18 +55,18 @@ const Header = (props: {
               </span>
             </span>
           </button>
-          {/* <!-- Hamburger Toggle BTN --> */}
+          {/* Hamburger Toggle Button */}
 
           {isDashboardPath ? (
             <>
-              <span className="text-md font-bold">Application Name</span>
-              <Link className="text-button text-sm ml-4" to="/dashboards/dashboard1">
+              <span className="text-md font-bold">{props.appName || 'Loading...'}</span> {/* Dynamic appName or fallback */}
+              <Link className="text-button text-sm ml-5" to="/dashboards/dashboard1">
                 Dashboard
               </Link>
-              <Link className="text-button text-sm" to="/dashboard-testcases/1">
+              <Link className="text-button text-sm ml-2" to="/dashboards/dashboard1/dashboard-testcases">
                 Test Cases
               </Link>
-              <Link className="text-button text-sm" to="/dashboard-history/1">
+              <Link className="text-button text-sm ml-2" to="/dashboards/dashboard1/dashboard-history">
                 History
               </Link>
             </>
@@ -78,13 +79,11 @@ const Header = (props: {
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
-            {/* <!-- Dark Mode Toggler --> */}
+            {/* Dark Mode Toggler */}
             <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
-
-            {/* <!-- Notification Menu Area --> */}
+            {/* Notification Menu Area */}
             <DropdownNotification />
-            {/* <!-- Notification Menu Area --> */}
+            {/* Notification Menu Area */}
           </ul>
         </div>
       </div>
