@@ -25,7 +25,7 @@ const Settings = () => {
 
   return (
     <>
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-21">
         <Breadcrumb pageName="Settings" />
 
         <div className="max-w-7xl mx-auto">
@@ -93,7 +93,7 @@ const Settings = () => {
             <label
               htmlFor="toggle"
               className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in-out ${
-            notificationsEnabled ? 'bg-red' : 'bg-gray-300 dark:bg-gray-600'
+            notificationsEnabled ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
               }`}
             >
               <span
@@ -119,7 +119,7 @@ const Settings = () => {
             <label className="flex items-center gap-3">
               <input
                 type="checkbox"
-                className="form-checkbox h-4 w-4 text-red"
+                className="form-checkbox h-4 w-4 text-primary"
               />
               <span className="text-sm text-black dark:text-white">
                 Email Notifications
@@ -130,7 +130,7 @@ const Settings = () => {
             <label className="flex items-center gap-3">
               <input
                 type="checkbox"
-                className="form-checkbox h-4 w-4 text-red"
+                className="form-checkbox h-4 w-4 text-primary"
               />
               <span className="text-sm text-black dark:text-white">
                 SMS Notifications
@@ -144,7 +144,7 @@ const Settings = () => {
             {/* Help Desk Message */}
             <div className="mt-10">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            To change your credentials or password, please contact the OCBC Helpdesk for assistance.
+            To change your cprimaryentials or password, please contact the OCBC Helpdesk for assistance.
           </p>
             </div>
 
@@ -153,7 +153,7 @@ const Settings = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="w-20 rounded bg-red-600 py-2 px-3 text-white font-semibold hover:bg-red-700 transition-colors"
+            className="w-20 rounded bg-primary-600 py-2 px-3 text-white font-semibold hover:bg-primary-700 transition-colors"
           >
             Logout
           </button>
