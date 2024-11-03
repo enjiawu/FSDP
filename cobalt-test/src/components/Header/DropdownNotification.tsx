@@ -92,7 +92,7 @@ const DropdownNotification = () => {
                       There are many variations
                     </span>{' '}
                     of passages of Lorem Ipsum available, but the majority have
-                    suffered
+                    suffeprimary
                   </p>
 
                   <p className="text-xs">04 Jan, 2025</p>
@@ -108,7 +108,7 @@ const DropdownNotification = () => {
                       There are many variations
                     </span>{' '}
                     of passages of Lorem Ipsum available, but the majority have
-                    suffered
+                    suffeprimary
                   </p>
 
                   <p className="text-xs">01 Dec, 2024</p>

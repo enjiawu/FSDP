@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../css/table.css';
+import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 
 // Define the interface for a test case
 interface TestCase {
@@ -39,6 +40,55 @@ const testCases: TestCase[] = [
     timeTaken: 60,
     status: 'Pending',
   },
+  {
+    id: 5,
+    title: 'Logout Functionality Test',
+    description: 'This test ensures that users can log out successfully.',
+    timeTaken: 45,
+    status: 'Passed',
+  },
+  {
+    id: 6,
+    title: 'Search Functionality Test',
+    description: 'Verifies that the search functionality returns accurate results.',
+    timeTaken: 110,
+    status: 'Failed',
+  },
+  {
+    id: 7,
+    title: 'Add to Cart Test',
+    description: 'Checks if items can be added to the shopping cart.',
+    timeTaken: 75,
+    status: 'Pending',
+  },
+  {
+    id: 8,
+    title: 'Checkout Process Test',
+    description: 'Ensures that users can complete the checkout process.',
+    timeTaken: 200,
+    status: 'Passed',
+  },
+  {
+    id: 9,
+    title: 'Payment Gateway Test',
+    description: 'Verifies that the payment gateway processes payments correctly.',
+    timeTaken: 180,
+    status: 'Failed',
+  },
+  {
+    id: 10,
+    title: 'User Profile Picture Upload Test',
+    description: 'Checks if users can upload and update their profile pictures.',
+    timeTaken: 50,
+    status: 'Passed',
+  },
+];
+
+const statusOptions = [
+  { value: 'All', label: 'All' },
+  { value: 'Passed', label: 'Passed' },
+  { value: 'Failed', label: 'Failed' },
+  { value: 'Pending', label: 'Pending' },
 ];
 
 const TestCaseTable = () => {
@@ -46,6 +96,13 @@ const TestCaseTable = () => {
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [filter, setFilter] = useState<'All' | 'Passed' | 'Failed' | 'Pending'>('All');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredTestCases = testCases.filter(testCase =>
+    (filter === 'All' || testCase.status === filter) &&
+    testCase.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleDescriptionClick = (testCase: TestCase) => {
     setModalContent({
@@ -60,19 +117,69 @@ const TestCaseTable = () => {
     setModalContent(null);
   };
 
-  const showTooltip = (event: React.MouseEvent<HTMLDivElement>, description: string) => {
-    setTooltipContent(description);
+  const showTooltip = (event: React.MouseEvent<HTMLElement>, content: string) => {
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    
+    setTooltipContent(content);
     setTooltipVisible(true);
-    setTooltipPosition({ top: event.clientY + 10, left: event.clientX + 10 });
+    
+    // Position the tooltip right above the text and centered horizontally
+    setTooltipPosition({
+      top: rect.top + window.scrollY - 20, 
+      left: rect.left + window.scrollX + rect.width / 2 - 400, // Adjusted to center the tooltip
+    });
   };
+  
 
   const hideTooltip = () => {
     setTooltipVisible(false);
   };
 
   return (
-    <div>
-      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-md bg-white p-6 shadow-md">
+      <div className="flex justify-between items-center mb-4">
+        <div 
+          className="relative" 
+          onMouseEnter={(e) => showTooltip(e, "Test cases are sorted by the sequence of execution, from first to last.")}
+          onMouseLeave={hideTooltip}
+        >
+          <h2 className="text-xl font-semibold">Test Case Status</h2>
+        </div>
+        <div className="flex items-center">
+            <div className="relative mr-4">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                className="h-5 w-5 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 2a7.5 7.5 0 010 14.65z"
+                />
+                </svg>
+              </span>
+              <input
+                type="text"
+                placeholder="Search Test Cases..."
+                className="border border-gray-400 rounded p-2 pl-10 pr-15"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          <DropdownSortBy 
+            value={filter}
+            onChange={(value) => setFilter(value as 'Passed' | 'Failed' | 'Pending' | 'All')}
+            options={statusOptions}
+          />
+        </div>
+      </div>
+
+      <div className="overflow-auto h-100">
         <div className="max-w-full overflow-x-auto">
           <table className="w-full table-auto">
             <thead>
@@ -85,13 +192,13 @@ const TestCaseTable = () => {
               </tr>
             </thead>
             <tbody>
-              {testCases.map((testCase) => (
+              {filteredTestCases.map((testCase) => (
                 <tr key={testCase.id}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">{testCase.id}</h5>
                   </td>
                   <td
-                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer font-medium text-blue-600 hover:underline"
+                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
                     onClick={() => handleDescriptionClick(testCase)} // Open modal on click
                   >
                     {testCase.title}
@@ -145,15 +252,10 @@ const TestCaseTable = () => {
         <div className="fixed inset-0 flex items-center justify-center" onClick={closeModal}>
           <div className="bg-white p-4 rounded shadow-lg" onClick={(e) => e.stopPropagation()}>
             <h5 className="font-medium">{modalContent.title}</h5>
-            <p><strong>Description:</strong> {modalContent.description}</p>
+            <p>{modalContent.description}</p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
-            <button
-              className="mt-2 px-4 py-2 text-white bg-blue-500 rounded"
-              onClick={closeModal}
-            >
-              Close
-            </button>
+            <button className="mt-2 bg-primary text-white rounded px-4 py-2" onClick={closeModal}>Close</button>
           </div>
         </div>
       )}

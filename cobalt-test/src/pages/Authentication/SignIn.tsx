@@ -13,8 +13,8 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
   const validate = () => {
     const newErrors: { username?: string; password?: string } = {};
-    if (!username) newErrors.username = 'Username is required';
-    if (!password) newErrors.password = 'Password is required';
+    if (!username) newErrors.username = 'Username is requiprimary';
+    if (!password) newErrors.password = 'Password is requiprimary';
     return newErrors;
   };
 
@@ -54,7 +54,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
                 className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               {errors.username && (
-                <span className="text-red-500 text-sm">{errors.username}</span>
+                <span className="text-primary-500 text-sm">{errors.username}</span>
               )}
             </div>
           </div>
@@ -69,7 +69,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
                 className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               {errors.password && (
-                <span className="text-red-500 text-sm">{errors.password}</span>
+                <span className="text-primary-500 text-sm">{errors.password}</span>
               )}
             </div>
           </div>
@@ -77,7 +77,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
           <div className="mb-3">
             <Link
               to="/forgot-password"
-              className="block text-sm font-medium text-red dark:text-red"
+              className="block text-sm font-medium text-primary dark:text-primary"
             >
               Forgot Password?
             </Link>
@@ -87,13 +87,13 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
             <input
               type="submit"
               value="Continue"
-              className="w-full cursor-pointer rounded-lg border mt-5 border-red bg-red p-3 text-white transition hover:bg-opacity-90"
+              className="w-full cursor-pointer rounded-lg border mt-5 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
             />
           </div>
         </form>
         <div className="text-center">
           <span className="text-sm text-black dark:text-white">Don't have an account? </span>
-          <Link to="ocbc.com" className="text-sm font-medium text-red dark:text-red">
+          <Link to="ocbc.com" className="text-sm font-medium text-primary dark:text-primary">
             Contact OCBC helpdesk
           </Link>
         </div>

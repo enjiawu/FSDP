@@ -63,7 +63,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-7.5">
-        <NavLink to="/" className="flex-grow-0 mr-18">
+        <NavLink to="/dashboards" className="flex-grow-0 mr-18">
           <img src={Logo} alt="Logo"/>
         </NavLink>
 
@@ -99,7 +99,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-3">
             {/* <!-- Menu Item Dashboard --> */}
             <SidebarLinkGroup
-                activeCondition={pathname === '/' || pathname.includes('dashboard')}
+                activeCondition={pathname === '/dashboard' || pathname.includes('dashboard')}
 
               >
                 {(handleClick, open) => {
@@ -108,15 +108,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <NavLink
                         to="/dashboards"
                         className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium 
-                          ${pathname === '/dashboards' || pathname.includes('dashboard') ? 'bg-red text-white' : 'text-black hover:bg-red hover:text-white'} 
-                          duration-300 ease-in-out dark:text-white dark:hover:bg-red`}
+                          ${pathname === '/dashboards' || pathname.includes('dashboards') ? 'bg-primary text-white' : 'text-black hover:bg-primary hover:text-white'} 
+                          duration-300 ease-in-out dark:text-white dark:hover:bg-primary`}
                         onClick={(e) => {
                           e.preventDefault(); // Prevent default link behavior
                           if ((e.target as Element).closest('.arrow')) {
                             handleClick(); // Only handle click for dropdown if the arrow is clicked
                           } else {
                             // Redirect to the dashboard page
-                            navigate('/dashboard');
+                            navigate('/dashboards');
                             setSidebarExpanded(true); // Open sidebar if it was closed
                           }
                         }}
@@ -143,22 +143,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/dashbord/dashboard1"
+                              to="/dashboards/dashboard1"
                               className={({ isActive }) =>
                                 `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
-                                ${isActive ? 'bg-red2 text-white' : 'text-black hover:bg-red2 dark:text-white hover:text-white'}`}
+                                ${isActive ? 'bg-red-700 text-white' : 'text-black hover:bg-red-700 dark:text-white hover:text-white'}`}
                             >
                               Dashboard 1
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/dashboard2"
-                              className={({ isActive }) =>
-                                `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
-                                ${isActive ? 'bg-red2 text-white' : 'text-black hover:text-white hover:bg-red2 dark:text-white'}`}
-                            >
-                              Dashboard 2
                             </NavLink>
                           </li>
                           </ul>
@@ -172,10 +162,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Test Cases --> */}
               <li>
                 <NavLink
-                  to="/test-cases"
+                  to="/all-test-cases"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('/test-cases') ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
-                    dark:text-white dark:hover:bg-red`}        
+                    ${pathname.includes('/test-cases') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    dark:text-white dark:hover:bg-primary`}        
                 >
                    <svg
                     className="fill-current"
@@ -202,10 +192,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             {/* <!-- Menu Item Applications --> */}
                             <li>
                 <NavLink
-                  to="/applications"
+                  to="/all-applications"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('applications') || pathname === '/applications' ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
-                    dark:text-white dark:hover:bg-red`}
+                    ${pathname.includes('applications') || pathname === '/applications' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    dark:text-white dark:hover:bg-primary`}
                 >
                   <svg
                     className="fill-current"
@@ -228,10 +218,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item History --> */}
               <li>
                 <NavLink
-                  to="/history"
+                  to="/all-history"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('/history') ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
-                    dark:text-white dark:hover:bg-red`}
+                    ${pathname.includes('/history') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    dark:text-white dark:hover:bg-primary`}
                 >
                   <svg
                     className="fill-current"
@@ -256,8 +246,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/settings"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('settings') || pathname === '/settings' ? 'bg-red text-white' : 'hover:bg-red hover:text-white'} 
-                    dark:text-white dark:hover:bg-red`}        
+                    ${pathname.includes('settings') || pathname === '/settings' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    dark:text-white dark:hover:bg-primary`}        
                 >
                   <svg
                     className="fill-current"

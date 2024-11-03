@@ -4,12 +4,11 @@ import { Route, Routes, useLocation, Navigate, useNavigate } from 'react-router-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
-import Dashboard from './pages/Dashboard/Dashboard';
+import Dashboards from './pages/Dashboards/Dashboards';
+import Dashboard from './pages/Dashboards/Dashboard';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
@@ -63,29 +62,20 @@ function App() {
                   element={
                     <>
                       <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
+                      <Dashboards />
+                    </>
+                  }
+                />
+                <Route
+                  path="/dashboards/dashboard1"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
                       <Dashboard />
                     </>
                   }
                 />
-                <Route
-                  path="/calendar"
-                  element={
-                    <>
-                      <PageTitle title="Calendar | CobaltTest - OCBC Automated Testing" />
-                      <Calendar />
-                    </>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <>
-                      <PageTitle title="Profile | CobaltTest - OCBC Automated Testing" />
-                      <Profile />
-                    </>
-                  }
-                />
-                <Route
+                <Route  
                   path="/forms/form-elements"
                   element={
                     <>

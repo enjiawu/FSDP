@@ -25,16 +25,12 @@ module.exports = {
           DEFAULT: '#1C2434',
           2: '#010101',
         },
-        red: {
-          ...colors.red,
-          DEFAULT: '#ED1C24',
-        },
         red2: '#FF6865',
         body: '#64748B',
         bodydark: '#AEB7C0',
         bodydark1: '#DEE4EE',
         bodydark2: '#8A99AF',
-        primary: '#3C50E0',
+        primary: '#ED1C24',
         secondary: '#80CAEE',
         stroke: '#E2E8F0',
         gray: {

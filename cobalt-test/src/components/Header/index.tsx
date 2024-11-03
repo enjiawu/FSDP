@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import DropdownNotification from './DropdownNotification';
-import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import Logo from '../../images/logo/logo-icon.png';
 
@@ -8,7 +7,7 @@ const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
-  const isDashboardPath = window.location.pathname.includes('/dashboard/') || window.location.pathname.includes('/dashboard-testcases/') || window.location.pathname.includes('/dashboard-history/');
+  const isDashboardPath = window.location.pathname.includes('/dashboards/') || window.location.pathname.includes('/dashboard-testcases/') || window.location.pathname.includes('/dashboard-history/');
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-gray drop-shadow-1 dark:bg-black dark:drop-shadow-none">
@@ -60,7 +59,7 @@ const Header = (props: {
           {isDashboardPath ? (
             <>
               <span className="text-md font-bold">Application Name</span>
-              <Link className="text-button text-sm" to="/dashboard/dashboard1">
+              <Link className="text-button text-sm ml-4" to="/dashboards/dashboard1">
                 Dashboard
               </Link>
               <Link className="text-button text-sm" to="/dashboard-testcases/1">
@@ -87,10 +86,6 @@ const Header = (props: {
             <DropdownNotification />
             {/* <!-- Notification Menu Area --> */}
           </ul>
-
-          {/* <!-- User Area --> */}
-          <DropdownUser />
-          {/* <!-- User Area --> */}
         </div>
       </div>
     </header>
