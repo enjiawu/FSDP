@@ -4,9 +4,12 @@ import { Route, Routes, useLocation, Navigate, useNavigate } from 'react-router-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import Chart from './pages/Chart';
 import Dashboards from './pages/Dashboards/Dashboards';
 import Dashboard from './pages/Dashboards/Dashboard';
+import DashboardTestCases from './pages/Dashboards/DashboardTestCases';
+import DashboardHistory from './pages/Dashboards/DashboardHistory';
+
+import Chart from './pages/Chart';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
 import Settings from './pages/Settings';
@@ -72,6 +75,24 @@ function App() {
                     <>
                       <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
                       <Dashboard />
+                    </>
+                  }
+                />
+                <Route
+                  path="/dashboards/dashboard1/dashboard-testcases"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard Test Cases | CobaltTest - OCBC Automated Testing" />
+                      <DashboardTestCases />
+                    </>
+                  }
+                />
+                <Route
+                  path="/dashboards/dashboard1/dashboard-history"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard History| CobaltTest - OCBC Automated Testing" />
+                      <DashboardHistory />
                     </>
                   }
                 />

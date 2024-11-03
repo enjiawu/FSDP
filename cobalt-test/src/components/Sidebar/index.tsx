@@ -54,6 +54,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     }
   }, [sidebarExpanded]);
 
+  const dashboardRoutes = [
+    { path: '/dashboards/dashboard1', label: 'Dashboard 1' },
+    //TODO: Change to actual dashboard routes
+  ];
+
   return (
     <aside
       ref={sidebar}
@@ -98,30 +103,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div>
             <ul className="mb-6 flex flex-col gap-3">
             {/* <!-- Menu Item Dashboard --> */}
-            <SidebarLinkGroup
-                activeCondition={pathname === '/dashboard' || pathname.includes('dashboard')}
-
-              >
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <NavLink
-                        to="/dashboards"
-                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium 
-                          ${pathname === '/dashboards' || pathname.includes('dashboards') ? 'bg-primary text-white' : 'text-black hover:bg-primary hover:text-white'} 
-                          duration-300 ease-in-out dark:text-white dark:hover:bg-primary`}
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent default link behavior
-                          if ((e.target as Element).closest('.arrow')) {
-                            handleClick(); // Only handle click for dropdown if the arrow is clicked
-                          } else {
-                            // Redirect to the dashboard page
-                            navigate('/dashboards');
-                            setSidebarExpanded(true); // Open sidebar if it was closed
-                          }
-                        }}
-                      >
-                         <svg
+            <SidebarLinkGroup activeCondition={pathname.includes('/dashboards')}>
+                {(handleClick, open) => (
+                  <React.Fragment>
+                    <NavLink
+                      to="/dashboards"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium 
+                        ${pathname.includes('/dashboards') ? 'bg-primary text-white' : 'text-black hover:bg-primary hover:text-white'} 
+                        duration-300 ease-in-out dark:text-white dark:hover:bg-primary`}
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent default link behavior
+                        if ((e.target as Element).closest('.arrow')) {
+                          handleClick(); // Only handle click for dropdown if the arrow is clicked
+                        } else {
+                          navigate('/dashboards');
+                          setSidebarExpanded(true); // Open sidebar if it was closed
+                        }
+                      }}
+                    >
+                        <svg
                         className="fill-current"
                         width="18"
                         height="18"
@@ -135,27 +135,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <path d="M15.4689 9.92822H11.8971C10.9408 9.92822 10.1533 10.7157 10.1533 11.672V15.2438C10.1533 16.2001 10.9408 16.9876 11.8971 16.9876H15.4689C16.4252 16.9876 17.2127 16.2001 17.2127 15.2438V11.7001C17.2127 10.7157 16.4252 9.92822 15.4689 9.92822ZM15.9752 15.272C15.9752 15.5532 15.7502 15.7782 15.4689 15.7782H11.8971C11.6158 15.7782 11.3908 15.5532 11.3908 15.272V11.7001C11.3908 11.4188 11.6158 11.1938 11.8971 11.1938H15.4689C15.7502 11.1938 15.9752 11.4188 15.9752 11.7001V15.272Z" />
                       </svg>
                       Dashboards
-                      <span className="ml-auto arrow cursor-pointer">
-                        {open ? '▼' : '▲'} 
+                      <span className={`ml-auto arrow cursor-pointer transform transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+                        ▼
                       </span>
-                      </NavLink>
-                      <div className={`translate transform overflow-hidden ${!open ? 'hidden' : ''}`}>
-                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                          <li>
+                    </NavLink>
+                    <div className={`translate transform overflow-hidden ${!open ? 'hidden' : ''}`}>
+                      <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                        {dashboardRoutes.map((route) => (
+                          <li key={route.path}>
                             <NavLink
-                              to="/dashboards/dashboard1"
+                              to={route.path}
                               className={({ isActive }) =>
-                                `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md px-4 py-2 font-medium 
-                                ${isActive ? 'bg-red-700 text-white' : 'text-black hover:bg-red-700 dark:text-white hover:text-white'}`}
+                                `group relative flex items-center duration-300 ease-in-out gap-2.5 rounded-md dark:text-white  py-2 px-4 ${
+                                  isActive ? 'bg-secondary text-white': 'text-black hover:bg-primary hover:text-white'
+                                }`
+                              }
                             >
-                              Dashboard 1
+                              {route.label}
                             </NavLink>
                           </li>
-                          </ul>
-                      </div>
-                    </React.Fragment>
-                  );
-                }}
+                        ))}
+                      </ul>
+                    </div>
+                  </React.Fragment>
+                )}
               </SidebarLinkGroup>
               {/* <!-- End Menu Item Dashboard --> */}
 
