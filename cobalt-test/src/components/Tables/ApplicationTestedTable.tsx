@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaEye, FaRedo } from 'react-icons/fa'; 
 
 // Define the interface for an application result

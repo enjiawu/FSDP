@@ -8,15 +8,9 @@ import Dashboards from './pages/Dashboards/Dashboards';
 import Dashboard from './pages/Dashboards/Dashboard';
 import DashboardTestCases from './pages/Dashboards/DashboardTestCases';
 import DashboardHistory from './pages/Dashboards/DashboardHistory';
-
-import Chart from './pages/Chart';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
 import Settings from './pages/Settings';
-import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import AllTestCases from './pages/AllTestCases';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -96,33 +90,6 @@ function App() {
                     </>
                   }
                 />
-                <Route  
-                  path="/forms/form-elements"
-                  element={
-                    <>
-                      <PageTitle title="Form Elements | CobaltTest - OCBC Automated Testing" />
-                      <FormElements />
-                    </>
-                  }
-                />
-                <Route
-                  path="/forms/form-layout"
-                  element={
-                    <>
-                      <PageTitle title="Form Layout | CobaltTest - OCBC Automated Testing" />
-                      <FormLayout />
-                    </>
-                  }
-                />
-                <Route
-                  path="/tables"
-                  element={
-                    <>
-                      <PageTitle title="Tables | CobaltTest - OCBC Automated Testing" />
-                      <Tables />
-                    </>
-                  }
-                />
                 <Route
                   path="/settings"
                   element={
@@ -132,30 +99,12 @@ function App() {
                     </>
                   }
                 />
-                <Route
-                  path="/chart"
+                 <Route
+                  path="/all-test-cases"
                   element={
                     <>
-                      <PageTitle title="Basic Chart | CobaltTest - OCBC Automated Testing" />
-                      <Chart />
-                    </>
-                  }
-                />
-                <Route
-                  path="/ui/alerts"
-                  element={
-                    <>
-                      <PageTitle title="Alerts | CobaltTest - OCBC Automated Testing" />
-                      <Alerts />
-                    </>
-                  }
-                />
-                <Route
-                  path="/ui/buttons"
-                  element={
-                    <>
-                      <PageTitle title="Buttons | CobaltTest - OCBC Automated Testing" />
-                      <Buttons />
+                      <PageTitle title="All Test Cases | CobaltTest - OCBC Automated Testing" />
+                      <AllTestCases />
                     </>
                   }
                 />
