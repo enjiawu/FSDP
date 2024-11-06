@@ -167,7 +167,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/all-test-cases"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('/test-cases') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    ${pathname.includes('/all-test-cases') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
                     dark:text-white dark:hover:bg-primary`}        
                 >
                    <svg
@@ -197,7 +197,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/all-applications"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('applications') || pathname === '/applications' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    ${pathname.includes('/all-applications') || pathname === '/applications' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
                     dark:text-white dark:hover:bg-primary`}
                 >
                   <svg
@@ -223,7 +223,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/all-history"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('/history') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    ${pathname.includes('/all-history') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
                     dark:text-white dark:hover:bg-primary`}
                 >
                   <svg
