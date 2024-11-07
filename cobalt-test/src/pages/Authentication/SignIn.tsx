@@ -13,8 +13,8 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
   const validate = () => {
     const newErrors: { username?: string; password?: string } = {};
-    if (!username) newErrors.username = 'Username is requiprimary';
-    if (!password) newErrors.password = 'Password is requiprimary';
+    if (!username) newErrors.username = 'Username is required';
+    if (!password) newErrors.password = 'Password is required';
     return newErrors;
   };
 
