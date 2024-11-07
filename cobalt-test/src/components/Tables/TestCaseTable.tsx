@@ -20,7 +20,7 @@ const testCases: TestCase[] = [
     status: 'Passed',
   },
   {
-    id: 2,
+    id: 2, 
     title: 'Sign Up Functionality Test',
     description: 'This test checks if new users can sign up successfully and receive confirmation.',
     timeTaken: 150,
