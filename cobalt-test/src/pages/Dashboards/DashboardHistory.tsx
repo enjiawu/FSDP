@@ -1,7 +1,7 @@
 import React from 'react';
-import DashboardHistoryTable from '../../components/Tables/DashboardHistoryTable';
+import DashboardHistoryTable from '../../components/Tables/HistoryTable';
 
-const Dashboard: React.FC = () => {
+const DashboardHistory: React.FC = () => {
   return (
     <>
       <DashboardHistoryTable/>
@@ -9,4 +9,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardHistory;

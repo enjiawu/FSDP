@@ -11,6 +11,7 @@ import DashboardHistory from './pages/Dashboards/DashboardHistory';
 import Settings from './pages/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import AllTestCases from './pages/AllTestCases';
+import AllHistory from './pages/AllHistory';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -105,6 +106,15 @@ function App() {
                     <>
                       <PageTitle title="All Test Cases | CobaltTest - OCBC Automated Testing" />
                       <AllTestCases />
+                    </>
+                  }
+                />
+                 <Route
+                  path="/all-history"
+                  element={
+                    <>
+                      <PageTitle title="All History | CobaltTest - OCBC Automated Testing" />
+                      <AllHistory />
                     </>
                   }
                 />
