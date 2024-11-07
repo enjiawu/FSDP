@@ -36,7 +36,7 @@ const DropdownSortBy: React.FC<DropdownSortByProps> = ({ value, onChange, option
         </span>
       </div>
       {isOpen && (
-        <ul className="absolute border rounded-md mt-1 w-full bg-white z-10">
+        <ul className="absolute border rounded-md mt-1 w-full bg-white z-10 dark:bg-black dark:text-white">
           {options.map(option => (
             <li 
               key={option.value} 
