@@ -148,7 +148,7 @@ const HistoryTableByTestCase = () => {
                               <tr className="bg-gray-100 dark:bg-meta-4">
                                 <th className="py-2 px-4 text-left text-black dark:text-white">Date/Time</th>
                                 <th className="py-2 px-4 text-left text-black dark:text-white">Time Taken (s)</th>
-                                <th className="py-2 px-4 text-left text-black dark:text-white">Time Taken (s)</th>
+                                <th className="py-2 px-4 text-left text-black dark:text-white">Status</th>
                               </tr>
                             </thead>
                             <tbody>
