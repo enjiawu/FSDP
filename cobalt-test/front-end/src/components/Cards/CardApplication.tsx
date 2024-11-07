@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 interface CardApplicationProps {
   title: string;
   imageSrc: string;
@@ -17,8 +17,14 @@ const CardApplication: React.FC<CardApplicationProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/dashboards/${title}/${category}`);
+  };
+
   return (
-    <div className="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full flex flex-col">
+    <div className="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full flex flex-col cursor-pointer" onClick = {handleCardClick}>
       <div className="flex flex-col flex-grow">
         <div className="flex justify-between w-full mb-2">
           <h4 className="text-title-md font-bold text-black dark:text-white">
@@ -42,7 +48,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
           </p>
 
           {/* Add to Favourites button */}
-          <button onClick={onToggleFavorite} className="flex items-center justify-center mt-2 bg-primary text-white text-sm font-bold py-2 rounded-md hover:bg-primary-600 transition hover:bg-secondary">
+          <button onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }} className="flex items-center justify-center mt-2 bg-primary text-white text-sm font-bold py-2 rounded-md hover:bg-primary-600 transition hover:bg-secondary">
             {isFavorite ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
