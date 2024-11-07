@@ -75,7 +75,7 @@ const applicationResults: ApplicationResult[] = [
   },
 ];
 
-const DashboardHistoryTable = () => {
+const HistoryTableByApplication = () => {
   const [openDropdown, setOpenDropdown] = React.useState<number | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -116,8 +116,7 @@ const DashboardHistoryTable = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h2 className="text-xl font-semibold mb-4">History</h2>
+    <div>
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
@@ -138,7 +137,7 @@ const DashboardHistoryTable = () => {
                 <>
                   <tr
                     key={result.id}
-                    className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4 cursor-pointer"
+                    className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4"
                   >
                     <td className="py-4 px-4 text-black dark:text-white">{result.id}</td>
                     <td className="py-4 px-4 text-black dark:text-white">{result.dateTime}</td>
@@ -153,20 +152,20 @@ const DashboardHistoryTable = () => {
                     <td className="py-4 px-4 text-black dark:text-white">{failed}</td>
                     <td className="py-4 px-4 text-black dark:text-white">
                       <div className="flex space-x-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goToDashboard(result.title, result.id);
+                          }}
+                          className="flex items-center text-gray-600 dark:text-white"
+                        >
+                          <FaEye />
+                        </button>
+                        <button className="flex items-center text-gray-600 dark:text-white">
+                          <FaRedoAlt />
+                        </button>
                         {failed > 0 && (
                           <>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                goToDashboard(result.title, result.id);
-                              }}
-                              className="flex items-center text-gray-600 dark:text-white"
-                            >
-                              <FaEye />
-                            </button>
-                            <button className="flex items-center text-gray-600 dark:text-white">
-                              <FaRedoAlt />
-                            </button>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -246,4 +245,4 @@ const DashboardHistoryTable = () => {
   );
 };
 
-export default DashboardHistoryTable;
+export default HistoryTableByApplication;

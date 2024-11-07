@@ -144,7 +144,7 @@ const Settings = () => {
             {/* Help Desk Message */}
             <div className="mt-10">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            To change your cprimaryentials or password, please contact the OCBC Helpdesk for assistance.
+            To change your credentials or password, please contact the OCBC Helpdesk for assistance.
           </p>
             </div>
 
