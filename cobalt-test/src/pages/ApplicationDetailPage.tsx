@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import AllTestCasesTable from "../components/Tables/AllTestCasesTable";
 
@@ -44,8 +44,6 @@ const ApplicationDetailPage: React.FC = () => {
     return <div>Application not found</div>;
   }
 
-  // Manage the state for maxTable in this page
-  const [maxTable, setMaxTable] = useState<number | null>(5);
 
   return (
     <div className="p-4">
@@ -54,15 +52,8 @@ const ApplicationDetailPage: React.FC = () => {
       <p><strong>Total Test Cases:</strong> {application.totalTestCases}</p>
       <p><strong>Success Rate:</strong> {application.successRate}%</p>
 
-      {/* Pass maxTable as a prop to AllTestCasesTable */}
-      <AllTestCasesTable maxTable={maxTable} />
-      
-      {/* Buttons to modify maxTable */}
-      <div>
-        <button onClick={() => setMaxTable(5)}>Show 5 rows</button>
-        <button onClick={() => setMaxTable(10)}>Show 10 rows</button>
-        <button onClick={() => setMaxTable(null)}>Show All</button>
-      </div>
+        {/*TO DO: Filter the table based on the selected app*/}
+        <AllTestCasesTable />
     </div>
   );
 };
