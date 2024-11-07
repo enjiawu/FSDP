@@ -8,6 +8,7 @@ interface TestCase {
   title: string;
   description: string;
   timeTaken: number; // Time taken in seconds
+  errorMessage?: string;
   status: 'Passed' | 'Failed' | 'Pending';
 }
 
@@ -25,6 +26,7 @@ const testCases: TestCase[] = [
     description: 'This test checks if new users can sign up successfully and receive confirmation.',
     timeTaken: 150,
     status: 'Failed',
+    errorMessage: 'Email already exists',
   },
   {
     id: 3,
@@ -53,6 +55,7 @@ const testCases: TestCase[] = [
     description: 'Verifies that the search functionality returns accurate results.',
     timeTaken: 110,
     status: 'Failed',
+    errorMessage: 'Search results are not displayed correctly',
   },
   {
     id: 7,
@@ -74,6 +77,7 @@ const testCases: TestCase[] = [
     description: 'Verifies that the payment gateway processes payments correctly.',
     timeTaken: 180,
     status: 'Failed',
+    errorMessage: 'Payment failed due to network error',
   },
   {
     id: 10,
@@ -85,7 +89,7 @@ const testCases: TestCase[] = [
 ];
 
 const TestCaseTable = () => {
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number } | null>(null);
+  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?:string} | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -103,6 +107,7 @@ const TestCaseTable = () => {
       description: testCase.description,
       status: testCase.status,
       timeTaken: testCase.timeTaken,
+      errorMessage: testCase.errorMessage,
     });
   };
 
@@ -195,7 +200,7 @@ const TestCaseTable = () => {
                   <h5 className="font-medium text-black dark:text-white">{testCase.id}</h5>
                 </td>
                 <td
-                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
+                  className="border-b border-[#eee] py-5 px-4 underline dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
                   onClick={() => handleDescriptionClick(testCase)} // Open modal on click
                 >
                   {testCase.title}
@@ -251,6 +256,9 @@ const TestCaseTable = () => {
             <p>{modalContent.description}</p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
+            {modalContent.errorMessage && (
+              <p><strong>Error Message:</strong> {modalContent.errorMessage}</p>
+            )}
             <button className="mt-2 bg-primary text-white rounded px-4 py-2 hover:bg-secondary" onClick={closeModal}>Close</button>
           </div>
         </div>
