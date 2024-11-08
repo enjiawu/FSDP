@@ -12,6 +12,8 @@ import Settings from './pages/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import AllTestCases from './pages/AllTestCases';
 import AllHistory from './pages/AllHistory';
+import AllApplication from './pages/AllApplications';
+import ApplicationDetailPage from './pages/ApplicationDetailPage';
 import Credits from './pages/Credits';
 import Help from './pages/Help';
 
@@ -111,7 +113,26 @@ function App() {
                     </>
                   }
                 />
-                <Route
+                 <Route 
+                  path="/all-applications"
+                  element={
+                    <>
+                      <PageTitle title="All Applications | CobaltTest - OCBC Automated Testing" />
+                      <AllApplication />
+                    </>
+                  }
+                 />
+                 <Route 
+                  path="/all-applications/:id" 
+                  element={
+                    <>
+                      <PageTitle title = "Application Details | CobaltTest - OCBC Automated Testing" />
+                      <ApplicationDetailPage />
+                    </> 
+                  }
+                  />
+                
+                 <Route
                   path="/all-history"
                   element={
                     <>
