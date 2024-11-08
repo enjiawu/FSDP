@@ -12,6 +12,10 @@ import Settings from './pages/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import AllTestCases from './pages/AllTestCases';
 import AllHistory from './pages/AllHistory';
+import AllApplication from './pages/AllApplications';
+import ApplicationDetailPage from './pages/ApplicationDetailPage';
+import Credits from './pages/Credits';
+import Help from './pages/Help';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -100,7 +104,7 @@ function App() {
                     </>
                   }
                 />
-                 <Route
+                <Route
                   path="/all-test-cases"
                   element={
                     <>
@@ -109,12 +113,49 @@ function App() {
                     </>
                   }
                 />
+                 <Route 
+                  path="/all-applications"
+                  element={
+                    <>
+                      <PageTitle title="All Applications | CobaltTest - OCBC Automated Testing" />
+                      <AllApplication />
+                    </>
+                  }
+                 />
+                 <Route 
+                  path="/all-applications/:id" 
+                  element={
+                    <>
+                      <PageTitle title = "Application Details | CobaltTest - OCBC Automated Testing" />
+                      <ApplicationDetailPage />
+                    </> 
+                  }
+                  />
+                
                  <Route
                   path="/all-history"
                   element={
                     <>
                       <PageTitle title="All History | CobaltTest - OCBC Automated Testing" />
                       <AllHistory />
+                    </>
+                  }
+                />
+                <Route
+                  path="/credits"
+                  element={
+                    <>
+                      <PageTitle title="Credits | CobaltTest - OCBC Automated Testing" />
+                      <Credits />
+                    </>
+                  }
+                />
+                <Route
+                  path="/help"
+                  element={
+                    <>
+                      <PageTitle title="Help | CobaltTest - OCBC Automated Testing" />
+                      <Help />
                     </>
                   }
                 />

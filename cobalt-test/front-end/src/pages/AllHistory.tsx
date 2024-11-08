@@ -1,10 +1,13 @@
 import React from 'react';
-import HistoryTable from '../components/Tables/HistoryTable';
+import HistoryTable from '../components/Tables/HistoryTableByApplication';
 
 const AllHistory: React.FC = () => {
   return (
     <>
-      <HistoryTable/>
+      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+        <h2 className="text-xl font-semibold mb-4">History</h2>
+        <HistoryTable/>
+      </div>
     </>
   );
 };

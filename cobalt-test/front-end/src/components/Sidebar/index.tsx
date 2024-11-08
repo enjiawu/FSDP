@@ -197,7 +197,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/all-applications"
                   className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
-                    ${pathname.includes('/all-applications') || pathname === '/applications' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    ${pathname.includes('/all-applications') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
                     dark:text-white dark:hover:bg-primary`}
                 >
                   <svg
@@ -291,8 +291,60 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* <!-- Sidebar Menu --> */}
       </div>
 
-       {/* Footer Section */}
-       <div className="mt-auto flex flex-col items-start p-4">
+      {/* Footer Section */}
+      {/* <!-- Menu Group Others--> */}
+      <div className="py-4 px-4 lg:mt-0 lg:px-6 w-full">
+        <ul className="flex flex-col gap-3">
+          {/* <!-- Menu Item Help --> */}
+          <li>
+          <NavLink
+          to="/help"
+          className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
+            ${pathname.includes('/help') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+            dark:text-white dark:hover:bg-primary`}        
+          >
+          <svg
+          className="fill-current"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          >
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+          <text x="12" y="16" textAnchor="middle" fontSize="12" fill="currentColor" fontFamily="Arial, sans-serif">?</text>
+          </svg>
+          Help
+          </NavLink>
+          </li>
+          {/* <!-- Menu Item Help --> */}
+
+          {/* <!-- Menu Item Credits --> */}
+          <li>
+        <NavLink
+          to="/credits"
+          className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
+            ${pathname.includes('/credits') ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+            dark:text-white dark:hover:bg-primary`}
+        >
+          <svg
+            className="fill-current"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+            <text x="12" y="16" textAnchor="middle" fontSize="12" fill="currentColor" fontFamily="Arial, sans-serif">C</text>
+          </svg>
+          Credits
+        </NavLink>
+          </li>
+          {/* <!-- Menu Item Credits --> */}
+        </ul>
+      </div>
+      <div className="mt-auto flex flex-col items-start p-4">
         <img src={OCBCLogo} alt="Company Logo" className="max-w-25 py-2" />
         <p className="text-title-xs font-bold">OCBC Group</p>
         <p className="text-title-xxs text-gray-500 leading-tight dark:text-gray-300">© Copyright 2004 – 2024 – OCBC Bank. All Rights Reserved. </p>

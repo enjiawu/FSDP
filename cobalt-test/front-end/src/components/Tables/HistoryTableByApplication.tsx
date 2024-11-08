@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaEye, FaRedoAlt } from 'react-icons/fa';
+import { FaChevronDown} from 'react-icons/fa';
+import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 
 interface TestCaseResult {
   id: number;
@@ -75,8 +76,11 @@ const applicationResults: ApplicationResult[] = [
   },
 ];
 
-const DashboardHistoryTable = () => {
+const HistoryTableByApplication = () => {
   const [openDropdown, setOpenDropdown] = React.useState<number | null>(null);
+  const [filter, setFilter] = useState<
+  'id-asc' | 'id-desc' | 'dateTime-asc' | 'dateTime-desc' | 'status-passed' | 'status-failed' | 'passed-asc' | 'passed-desc'
+  >('id-asc');  
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -96,7 +100,46 @@ const DashboardHistoryTable = () => {
     navigate(`/dashboards/${applicationName}/${id}`);
   };
 
-  
+  const sortedResults = useMemo(() => {
+    const resultsCopy = [...applicationResults]; // Copy the array to avoid direct mutation
+    switch (filter) {
+      case 'id-asc':
+        return resultsCopy.sort((a, b) => a.id - b.id);
+      case 'id-desc':
+        return resultsCopy.sort((a, b) => b.id - a.id);
+      case 'dateTime-asc':
+        return resultsCopy.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+      case 'dateTime-desc':
+        return resultsCopy.sort((a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime());
+      case 'passed-asc':
+        return resultsCopy.sort((a, b) => {
+          const aFailed = a.testCases.filter((testCase) => testCase.status === 'Failed').length;
+          const bFailed = b.testCases.filter((testCase) => testCase.status === 'Failed').length;
+          return bFailed - aFailed;
+        });
+      case 'passed-desc':
+        return resultsCopy.sort((a, b) => {
+          const aPassed = a.testCases.filter((testCase) => testCase.status === 'Passed').length;
+          const bPassed = b.testCases.filter((testCase) => testCase.status === 'Passed').length;
+          return bPassed - aPassed;
+        });
+      case 'status-passed':
+        return resultsCopy.sort((a, b) => {
+          const aFailed = a.testCases.filter((testCase) => testCase.status === 'Failed').length;
+          const bFailed = b.testCases.filter((testCase) => testCase.status === 'Failed').length;
+          return aFailed - bFailed;
+        });
+      case 'status-failed':
+        return resultsCopy.sort((a, b) => {
+          const aPassed = a.testCases.filter((testCase) => testCase.status === 'Passed').length;
+          const bPassed = b.testCases.filter((testCase) => testCase.status === 'Passed').length;
+          return aPassed - bPassed;
+        });
+      default:
+        return resultsCopy;
+    }
+  }, [filter]);
+
   const showTooltip = (event: React.MouseEvent<HTMLElement>, content: string) => {
     const target = event.currentTarget;
     const rect = target.getBoundingClientRect();
@@ -116,8 +159,24 @@ const DashboardHistoryTable = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h2 className="text-xl font-semibold mb-4">History</h2>
+    <div>
+      <div className="flex justify-end items-center mb-4">
+        <DropdownSortBy 
+            value={filter}
+            onChange={(value) => setFilter(value as 'id-asc' | 'id-desc' | 'dateTime-asc' | 'dateTime-desc' | 'status-passed' | 'status-failed' | 'passed-asc' | 'passed-desc')}
+            options={[
+              { label: 'ID (asc)', value: 'id-asc' },
+              { label: 'ID (desc)', value: 'id-desc' },
+              { label: 'Date/Time (asc)', value: 'dateTime-asc' },
+              { label: 'Date/Time (desc)', value: 'dateTime-desc' },
+              { label: 'Status (Failed)', value: 'sttus-failed' },
+              { label: 'Status (Passed)', value: 'status-passed' },
+              { label: 'Passed (asc)', value: 'passed-asc' },
+              { label: 'Passed (failed)', value: 'passed-desc' },
+            ]}
+        />
+      </div>
+
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
@@ -131,14 +190,14 @@ const DashboardHistoryTable = () => {
             </tr>
           </thead>
           <tbody>
-            {applicationResults.map((result) => {
+            {sortedResults.map((result) => {
               const { passed, failed } = getPassFailCounts(result.testCases);
               const overallStatus = failed > 0 ? 'Failed' : 'Passed';
               return (
                 <>
                   <tr
                     key={result.id}
-                    className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4 cursor-pointer"
+                    className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4"
                   >
                     <td className="py-4 px-4 text-black dark:text-white">{result.id}</td>
                     <td className="py-4 px-4 text-black dark:text-white">{result.dateTime}</td>
@@ -152,30 +211,37 @@ const DashboardHistoryTable = () => {
                     <td className="py-4 px-4 text-black dark:text-white">{passed}</td>
                     <td className="py-4 px-4 text-black dark:text-white">{failed}</td>
                     <td className="py-4 px-4 text-black dark:text-white">
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-8">
+                        <button
+                          onClick={(e) => {
+                          e.stopPropagation();
+                          goToDashboard(result.title, result.id);
+                          }}
+                          className="flex items-center text-primary font-bold"
+                        >
+                          <span>View Dashboard</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goToDashboard(result.title, result.id);
+                            setTimeout(() => window.print(), 1000);
+                          }}
+                          className="flex items-center text-primary font-bold"
+                        >
+                          <span>Print</span>
+                        </button>
                         {failed > 0 && (
                           <>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                goToDashboard(result.title, result.id);
-                              }}
-                              className="flex items-center text-gray-600 dark:text-white"
-                            >
-                              <FaEye />
-                            </button>
-                            <button className="flex items-center text-gray-600 dark:text-white">
-                              <FaRedoAlt />
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleDropdown(result.id);
-                              }}
-                              className="flex items-center text-gray-600 dark:text-white"
-                            >
-                              <FaChevronDown />
-                            </button>
+                          <button
+                            onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDropdown(result.id);
+                            }}
+                            className="flex items-center text-gray-600 dark:text-white"
+                          >
+                            <FaChevronDown />
+                          </button>
                           </>
                         )}
                       </div>
@@ -246,4 +312,5 @@ const DashboardHistoryTable = () => {
   );
 };
 
-export default DashboardHistoryTable;
+export default HistoryTableByApplication;
+
