@@ -3,6 +3,7 @@ import CardDataStats from '../../components/Cards/CardDataStats';
 import OverallBrowserStatus from '../../components/Charts/OverallBrowserStatus';
 import OverallTestCaseStatus from '../../components/Charts/OverallTestCaseStatus';
 import TestCaseTable from '../../components/Tables/TestCaseTable';
+import runTestRequest from '../../../../back-end/runTestRequest'
 
 const Dashboard: React.FC = () => {
   return (
@@ -11,7 +12,7 @@ const Dashboard: React.FC = () => {
         {/* Test Application Card */}
         <div className="col-span-1 md:col-span-1 xl:col-span-1 p-4 border rounded-lg shadow-lg bg-white dark:border-strokedark dark:bg-boxdark ">
           <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">Test Application</h3>
-          <button className="bg-primary text-white px-4 py-2 w-full rounded hover:bg-secondary">Run Test</button>
+          <button className="bg-primary text-white px-4 py-2 w-full rounded hover:bg-secondary" onClick={runTestRequest}>Run Test</button>
         </div>
 
         {/* Testing Schedule Card */}
