@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { MongoClient } = require('mongodb');
 
 // MongoDB connection string
-const uri = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/?retryWrites=true&w=majority&appName=testResults';
+const uri = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/';
 
 // MongoDB client
 let db;
