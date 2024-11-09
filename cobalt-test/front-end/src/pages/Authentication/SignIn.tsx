@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import Logo from '../../images/logo/logo.png';
 
 interface SignInProps {
-  onLogin: () => void;
+  onLogin: (token: string) => void;
 }
+
 
 const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -18,17 +19,43 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
+      return;
+    }
+    try {
+      // Start loading
+
+     // Sending login data to the backend
+     const response = await fetch('http://localhost:3000/signin', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({ username, password }),
+     });
+
+     const data = await response.json();
+
+     if (response.status === 200) {
+       onLogin(data.token);
+     } else {
+       alert(data.message);
+     }
+   } catch (error) {
+     console.error('Login error:', error);
+     alert('An error occurred while logging in.');
+   }
+  };
+    /*} else {
       // Handle form submission
       console.log('Form submitted', { username, password });
       onLogin();
     }
-  };
+  };*/
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
