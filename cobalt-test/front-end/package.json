@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node ../back-end/server.js",
+    "start": "concurrently \"npm run dev\" \"npm run server\""
   },
   "author": {
     "name": "TailAdmin",
@@ -15,11 +17,13 @@
   },
   "dependencies": {
     "apexcharts": "^3.41.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
     "flatpickr": "^4.6.13",
     "headlessui": "^0.0.0",
     "jsvectormap": "^1.5.3",
     "match-sorter": "^6.3.1",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
@@ -27,7 +31,8 @@
     "react-router-dom": "^6.14.2",
     "react-toastify": "^9.1.3",
     "react-tooltip": "^5.28.0",
-    "sort-by": "^0.0.2"
+    "sort-by": "^0.0.2",
+    "testcafe": "^3.7.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.17",
