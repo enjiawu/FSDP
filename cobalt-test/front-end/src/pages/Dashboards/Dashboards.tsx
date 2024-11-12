@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import CardApplication from '../../components/Cards/CardApplication';
 import DropdownSortBy from '../../components/Dropdowns/DropdownSortBy';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 // Dummy data for applications
 const dummyApplications = [
@@ -76,7 +77,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">All Dashboards</h1>
+      <Breadcrumb pageName = "All dashboards"/>
 
       {/* Search and Sort Container */}
       <div className="flex items-center mb-4">
