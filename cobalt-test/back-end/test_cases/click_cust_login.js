@@ -6,12 +6,12 @@ fixture `its 3am`
 
 
 // MongoDB configuration
-const mongoUrl = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/?retryWrites=true&w=majority&appName=testResults'; // Replace with your MongoDB connection string
+const mongoUrl = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/?retryWrites=true&w=majority&appName=testResults';
 const dbName = 'app_test_results';
 const collectionName = 'testResults';
 
 // Function to log the main test result
-async function logTestResult(t, status) {
+async function logTestResult(t, status, errorDetails = null) {
     const client = new MongoClient(mongoUrl);
 
     const testResult = {
@@ -23,7 +23,8 @@ async function logTestResult(t, status) {
             name: t.browser.name,
             version: t.browser.version,
             platform: t.browser.platform
-        }
+        },
+        errorLogs: errorDetails
     };
 
     try {
@@ -49,7 +50,7 @@ test('Login as customer test', async t => {
         await logTestResult(t, 'Passed');
     } catch (error) {  
         console.error('Test failed:', error);  
-        await logTestResult(t, 'Failed');
+        await logTestResult(t, 'Failed', error.message);
         throw error;
     }  
 }); 
