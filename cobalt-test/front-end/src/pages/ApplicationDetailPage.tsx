@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import AllTestCasesTable from "../components/Tables/AllTestCasesTable";
+import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 
 interface AllApplicationResult {
   id: number;
@@ -46,7 +47,9 @@ const ApplicationDetailPage: React.FC = () => {
 
 
   return (
-    <div className="p-4">
+    <>
+     <Breadcrumb pageName = "Application Details"/>
+     <div className="p-4">
       <h1>{application.title}</h1>
       <p><strong>ID:</strong> {application.id}</p>
       <p><strong>Total Test Cases:</strong> {application.totalTestCases}</p>
@@ -55,6 +58,7 @@ const ApplicationDetailPage: React.FC = () => {
         {/*TO DO: Filter the table based on the selected app*/}
         <AllTestCasesTable />
     </div>
+    </>
   );
 };
 
