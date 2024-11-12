@@ -56,6 +56,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   const dashboardRoutes = [
     { path: '/dashboards/dashboard1', label: 'Dashboard 1' },
+    { path: '/dashboards/XYZ Bank', label:'XYZ Bank'}
     //TODO: Change to actual dashboard routes
   ];
 

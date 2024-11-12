@@ -1,14 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import DropdownNotification from './DropdownNotification';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import Logo from '../../images/logo/logo-icon.png';
+import React from 'react';
 
-const Header = (props: {
+const Header: React.FC<{
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
-  appName: string; 
-}) => {
+  appTitle?: string; 
+}> = (props) => {
   const isDashboardPath = window.location.pathname.includes('/dashboards/') || window.location.pathname.includes('/dashboard-testcases/') || window.location.pathname.includes('/dashboard-history/');
+
+  const location = useLocation();
+  const path = location.pathname;
+
+  // Extract appTitle from the path (assuming the format is /dashboards/:appTitle)
+  const match = path.match(/\/dashboards\/([^/]+)/);  // Matches the appTitle after '/dashboards/'
+  const appTitle = match ? match[1] : undefined;  // Extract appTitle or use undefined
+
+  const decodedAppTitle = appTitle ? decodeURIComponent(appTitle) : 'Loading...';
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-gray drop-shadow-1 dark:bg-black dark:drop-shadow-none">
@@ -59,14 +69,14 @@ const Header = (props: {
 
           {isDashboardPath ? (
             <>
-              <span className="text-md font-bold">{props.appName || 'Loading...'}</span> {/* Dynamic appName or fallback */}
-              <Link className="text-button text-sm ml-5" to="/dashboards/dashboard1">
+              <span className="text-md font-bold">{decodedAppTitle || 'Loading...'}</span> {/* Dynamic appName or fallback */}
+              <Link className="text-button text-sm ml-5" to={`/dashboards/${appTitle}`}>
                 Dashboard
               </Link>
-              <Link className="text-button text-sm ml-2" to="/dashboards/dashboard1/dashboard-testcases">
+              <Link className="text-button text-sm ml-2" to={`/dashboards/${appTitle}/dashboard-testcases`}>
                 Test Cases
               </Link>
-              <Link className="text-button text-sm ml-2" to="/dashboards/dashboard1/dashboard-history">
+              <Link className="text-button text-sm ml-2" to={`/dashboards/${appTitle}/dashboard-history`}>
                 History
               </Link>
             </>

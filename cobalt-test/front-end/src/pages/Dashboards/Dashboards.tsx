@@ -8,49 +8,21 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 const dummyApplications = [
   { 
     id: 1, 
-    title: 'Mobile Banking App', 
-    imageSrc: '/path/to/imageA.jpg', 
-    description: 'Access your accounts, make transfers, and manage your finances on the go.', 
-    category: 'Banking' 
-  },
-  { 
-    id: 2, 
-    title: 'Budget Tracker', 
-    imageSrc: '/path/to/imageB.jpg', 
+    title: 'XYZ Bank', 
+    imageSrc: './XYZ_icon.png', 
     description: 'Keep track of your spending and create budgets to save money.', 
     category: 'Finance' 
   },
   { 
-    id: 3, 
-    title: 'Investment Portfolio Manager', 
-    imageSrc: '/path/to/imageC.jpg', 
-    description: 'Manage your investments and track market trends in real time.', 
-    category: 'Investment' 
-  },
-  { 
-    id: 4, 
-    title: 'Loan Calculator', 
-    imageSrc: '/path/to/imageD.jpg', 
-    description: 'Calculate your loan payments and understand your financing options.', 
-    category: 'Loans' 
-  },
-  { 
-    id: 5, 
-    title: 'Savings Goal Tracker', 
-    imageSrc: '/path/to/imageE.jpg', 
-    description: 'Set savings goals and track your progress towards financial milestones.', 
-    category: 'Savings' 
-  },
-  { 
-    id: 6, 
-    title: 'Transaction History Viewer', 
-    imageSrc: '/path/to/imageF.jpg', 
-    description: 'View and filter your transaction history for easy account management.', 
-    category: 'Account Management' 
+    id: 2, 
+    title: 'Dashboard1', 
+    imageSrc: './dashboard.png', 
+    description: 'Keep track and manage your applications in real-time.', 
+    category: 'Analytics' 
   },
 ];
 
-const Dashboard: React.FC = () => {
+const Dashboards: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOption, setSortOption] = useState<string>('title');
@@ -112,7 +84,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Flexbox container for cards */}
-      <div className="flex flex-wrap justify-between">
+      <div className="flex flex-wrap justify-start">
         {filteprimaryApplications.map((app) => (
           <div key={app.id} className="w-full sm:w-1/2 md:w-1/3 p-2">
             <CardApplication
@@ -130,4 +102,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboards;

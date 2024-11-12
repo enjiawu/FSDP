@@ -5,12 +5,19 @@ import OverallTestCaseStatus from '../../components/Charts/OverallTestCaseStatus
 import TestCaseTable from '../../components/Tables/TestCaseTable';
 import runTestRequest from '../../../../back-end/runTestRequest'
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { useParams } from 'react-router-dom';
+import PageTitle from '../../components/PageTitle';
+
 
 const Dashboard: React.FC = () => {
+  const { appTitle } = useParams();  
+  const decodedAppTitle = decodeURIComponent(appTitle || '')
+
   return (
     <>
+      <PageTitle title={`${decodedAppTitle} | Dashboard | CobaltTest - OCBC Automated Testing`} />
       {/* Breadcrumb */}
-      <Breadcrumb pageName = "Replace with application name"/>
+      <Breadcrumb pageName = {decodedAppTitle}/>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:gap-7.5">
         {/* Test Application Card */}
         <div className="col-span-1 md:col-span-1 xl:col-span-1 p-4 border rounded-lg shadow-lg bg-white dark:border-strokedark dark:bg-boxdark ">
