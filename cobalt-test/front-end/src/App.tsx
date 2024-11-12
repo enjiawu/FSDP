@@ -78,6 +78,33 @@ function App() {
                   }
                 />
                 <Route
+                  path="/dashboards/XYZ Bank"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
+                      <Dashboard />
+                    </>
+                  }
+                />
+                <Route
+                  path="/dashboards/XYZ Bank/dashboard-testcases"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
+                      <Dashboard />
+                    </>
+                  }
+                />
+                <Route
+                  path="/dashboards/XYZ Bank/dashboard-history"
+                  element={
+                    <>
+                      <PageTitle title="Dashboard | CobaltTest - OCBC Automated Testing" />
+                      <Dashboard />
+                    </>
+                  }
+                />
+                <Route
                   path="/dashboards/dashboard1/dashboard-testcases"
                   element={
                     <>
