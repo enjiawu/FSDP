@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../css/general.css';
 import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 import UploadCard from '../UploadCard';
+import { runSelectedTestRequest }from '../../../../back-end/runTestRequest'
 
 interface TestCase {
   id: number;
@@ -14,7 +15,7 @@ interface TestCase {
 }
 
 const testCases: TestCase[] = [
-  { id: 1, title: 'Login Functionality Test', description: 'This test verifies that the login functionality works as expected.', timeTaken: 120, successRate: 100, dateAdded: '2024-10-01', reporter: 'Alice Johnson' },
+  { id: 1, title: "click_cust_login.js", description: 'This test verifies that the login functionality works as expected.', timeTaken: 120, successRate: 100, dateAdded: '2024-10-01', reporter: 'Alice Johnson' },
   { id: 2, title: 'Sign Up Functionality Test', description: 'This test checks if new users can sign up successfully and receive confirmation.', timeTaken: 150, successRate: 0, dateAdded: '2024-10-02', reporter: 'Bob Smith' },
   { id: 3, title: 'Profile Update Test', description: 'Verifies that users can update their profile information successfully.', timeTaken: 80, successRate: 100, dateAdded: '2024-10-03', reporter: 'Charlie Brown' },
   { id: 4, title: 'Password Reset Test', description: 'Checks if users can reset their password via email.', timeTaken: 90, successRate: 80, dateAdded: '2024-10-04', reporter: 'David Wilson' },
@@ -63,9 +64,16 @@ const AllTestCasesTable = () => {
   };
 
   const handleTestButtonClick = () => {
-    console.log('Testing selected test cases:', selectedTestCases);
-    // TODO:: test execution logic 
+    const selectedTestCaseTitles = testCases
+      .filter((testCase) => selectedTestCases.includes(testCase.id))
+      .map((testCase) => testCase.title);
+
+    console.log('Testing selected test cases:', selectedTestCaseTitles);
+    
+    // Call the API endpoint to run the selected tests
+    runSelectedTestRequest(selectedTestCaseTitles);
   };
+
   const sortedTestCases = filteredTestCases.sort((a, b) => {
     switch (filter) {
       case 'id-asc':
