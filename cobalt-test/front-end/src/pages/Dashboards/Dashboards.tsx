@@ -19,10 +19,10 @@ const dummyApplications = [
     imageSrc: './dashboard.png', 
     description: 'Keep track and manage your applications in real-time.', 
     category: 'Analytics' 
-  }
+  },
 ];
 
-const Dashboard: React.FC = () => {
+const Dashboards: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOption, setSortOption] = useState<string>('title');
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Flexbox container for cards */}
-      <div className="flex flex-wrap justify-between">
+      <div className="flex flex-wrap justify-start">
         {filteprimaryApplications.map((app) => (
           <div key={app.id} className="w-full sm:w-1/2 md:w-1/3 p-2">
             <CardApplication
@@ -102,4 +102,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboards;
