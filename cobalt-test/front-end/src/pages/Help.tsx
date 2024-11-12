@@ -114,11 +114,11 @@ const Help: React.FC = () => {
             <h5 className="text-md font-bold text-black dark:text-white mb-3">Have a question? Ask us!</h5>
             <form onSubmit={handleFaqSubmit} className="flex flex-col">
               <textarea
-                value={faqInput}
-                onChange={(e) => setFaqInput(e.target.value)}
-                className="border p-2 rounded-lg mb-3 text-sm text-gray-600 dark:text-gray-300"
-                rows={4}
-                placeholder="Type your question here..."
+              value={faqInput}
+              onChange={(e) => setFaqInput(e.target.value)}
+              className="border p-2 rounded-lg mb-3 text-sm text-gray-600 dark:text-gray-300 dark:bg-gray-700"
+              rows={4}
+              placeholder="Type your question here..."
               />
               <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg">Submit</button>
             </form>
