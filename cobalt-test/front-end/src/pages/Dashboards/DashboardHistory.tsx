@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import HistoryByTestCaseTable from '../../components/Tables/HistoryTableByTestCase';
 import HistoryByApplicationTable from '../../components/Tables/HistoryTableByApplication';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 const DashboardHistory: React.FC = () => {
   const [viewBy, setViewBy] = useState<'application' | 'testcase'>('application');
@@ -11,6 +12,8 @@ const DashboardHistory: React.FC = () => {
 
   return (
     <>
+     <Breadcrumb pageName = "Replace with application name"/>
+     
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">History</h2>

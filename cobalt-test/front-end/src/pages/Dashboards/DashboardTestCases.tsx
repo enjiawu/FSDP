@@ -2,11 +2,14 @@ import React from 'react';
 
 import AllTestCasesTable from '../../components/Tables/AllTestCasesTable';
 import UploadCard from '../../components/UploadCard';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 const Dashboard: React.FC = () => {
   return (
     <>
     {/* Test Application Card */}
+    <Breadcrumb pageName = "Replace with application name"/>
+    
     <div className="rounded-md border sm:px-7.5 border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <h5 className="text-xl font-semibold text-black dark:text-white mb-4">
         Add New Test Case
