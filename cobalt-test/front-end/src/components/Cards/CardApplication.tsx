@@ -20,7 +20,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/dashboards/${title}/${category}`);
+    navigate(`/dashboards/${title}`);
   };
 
   return (
@@ -37,7 +37,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
           <img
             src={imageSrc}
             alt={title}
-            className="w-full h-32 object-cover rounded-md mb-2"
+            className="w-full h-full object-cover rounded-md mb-2"
           />
           <div className="flex justify-between w-full">
             <span className="text-sm font-bold text-gray-800 dark:text-gray-200">{category}</span>

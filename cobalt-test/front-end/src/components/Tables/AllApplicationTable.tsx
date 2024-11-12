@@ -11,27 +11,15 @@ interface AllApplicationResult {
 const allApplicationTable: AllApplicationResult[] = [
   {
     id: 1,
-    title: 'Banking Application 1',
-    totalTestCases: 14,
-    successRate: 79,
+    title: 'Nura Bank',
+    totalTestCases: 8,
+    successRate: 98,
   },
   {
     id: 2,
-    title: 'Banking Application 2',
-    totalTestCases: 8,
-    successRate: 88,
-  },
-  {
-    id: 3,
-    title: 'Wallet App 1',
-    totalTestCases: 7,
-    successRate: 86,
-  },
-  {
-    id: 4,
-    title: 'Wallet App 2',
-    totalTestCases: 6,
-    successRate: 67,
+    title: 'XYZ Bank',
+    totalTestCases: 14,
+    successRate: 90,
   },
 ];
 

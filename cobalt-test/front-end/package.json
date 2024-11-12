@@ -10,12 +10,10 @@
     "server": "node ../back-end/server.js",
     "start": "concurrently \"npm run dev\" \"npm run server\""
   },
-  "author": {
-    "name": "TailAdmin",
-    "email": "hello@tailadmin.com",
-    "url": "https://tailadmin.com"
-  },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.6",
     "apexcharts": "^3.41.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
@@ -35,7 +33,7 @@
     "testcafe": "^3.7.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.17",
+    "@types/react": "^18.3.12",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.14",

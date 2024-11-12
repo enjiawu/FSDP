@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import AllTestCasesTable from "../components/Tables/AllTestCasesTable";
+import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 
 interface AllApplicationResult {
   id: number;
@@ -12,27 +13,15 @@ interface AllApplicationResult {
 const allApplicationTable: AllApplicationResult[] = [
   {
     id: 1,
-    title: 'Banking Application 1',
-    totalTestCases: 14,
-    successRate: 79,
+    title: 'Nura Bank',
+    totalTestCases: 8,
+    successRate: 98,
   },
   {
     id: 2,
-    title: 'Banking Application 2',
-    totalTestCases: 8,
-    successRate: 88,
-  },
-  {
-    id: 3,
-    title: 'Wallet App 1',
-    totalTestCases: 7,
-    successRate: 86,
-  },
-  {
-    id: 4,
-    title: 'Wallet App 2',
-    totalTestCases: 6,
-    successRate: 67,
+    title: 'XYZ Bank',
+    totalTestCases: 14,
+    successRate: 90,
   },
 ];
 
@@ -46,7 +35,9 @@ const ApplicationDetailPage: React.FC = () => {
 
 
   return (
-    <div className="p-4">
+    <>
+     <Breadcrumb pageName = "Application Details"/>
+     <div className="p-4">
       <h1>{application.title}</h1>
       <p><strong>ID:</strong> {application.id}</p>
       <p><strong>Total Test Cases:</strong> {application.totalTestCases}</p>
@@ -55,6 +46,7 @@ const ApplicationDetailPage: React.FC = () => {
         {/*TO DO: Filter the table based on the selected app*/}
         <AllTestCasesTable />
     </div>
+    </>
   );
 };
 
