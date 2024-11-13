@@ -174,7 +174,7 @@ function App() {
                     }
                   />
                   <Route 
-                    path="/all-applications-dashboard"
+                    path="/all-applications"
                     element={
                       <>
                         <PageTitle title="All Applications | CobaltTest - OCBC Automated Testing" />

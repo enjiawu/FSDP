@@ -194,9 +194,11 @@ const HistoryTableByTestCase = () => {
           </tr>
         </thead>
         <tbody>
-          {sortedResults.map((result) => {
-            return (
-              <tr key={result.id} className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4">
+          {sortedResults.map((result) => (
+            <React.Fragment key={result.id}>
+              <tr
+                className="border-b border-stroke dark:border-strokedark hover:bg-gray-2 dark:hover:bg-meta-4"
+              >
                 <td className="py-4 px-4 text-black dark:text-white">{result.id}</td>
                 <td className="py-4 px-4 text-black dark:text-white">{result.name}</td>
                 <td className="py-4 px-4 text-black dark:text-white">{result.browser}</td>
@@ -216,8 +218,8 @@ const HistoryTableByTestCase = () => {
                 <td className="py-4 px-4 text-black dark:text-white">{result.successRate}%</td>
                 <td className="py-4 px-4 text-black dark:text-white">
                   <div className="flex items-center justify-start">
-                    <button 
-                      onClick={() => toggleDropdown(result.id)} 
+                    <button
+                      onClick={() => toggleDropdown(result.id)}
                       className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                     >
                       <FaChevronDown />
@@ -225,8 +227,47 @@ const HistoryTableByTestCase = () => {
                   </div>
                 </td>
               </tr>
-            );
-          })}
+
+              {openDropdown === result.id && (
+                <tr>
+                  <td colSpan={8} className="py-2 px-4 w-full"> 
+                    <div className="text-sm text-gray-600">
+                      <h3 className="font-semibold">Failed Test Cases</h3>
+                      <table className="mt-2 w-full table-auto">
+                        <thead>
+                          <tr className="bg-gray-100 dark:bg-meta-4">
+                            <th className="py-2 px-4 text-left text-black dark:text-white">Date/Time</th>
+                            <th className="py-2 px-4 text-left text-black dark:text-white">Time Taken (s)</th>
+                            <th className="py-2 px-4 text-left text-black dark:text-white">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.history
+                            .map((testCase) => (
+                              <tr key={testCase.dateTime}>
+                                <td className="py-2 px-4 dark:text-white">{testCase.dateTime}</td>
+                                <td className="py-2 px-4 dark:text-white">{testCase.timeTaken}</td>
+                                <td className="py-4 px-4">
+                                  <div
+                                    className={`inline-block px-4 py-1 rounded-full text-sm font-medium ${
+                                      testCase.status === 'Passed'
+                                        ? 'bg-green-200 text-green-600'
+                                        : 'bg-red-200 text-red-600'
+                                    }`}
+                                  >
+                                    {testCase.status}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
         </tbody>
       </table>
       </div>
