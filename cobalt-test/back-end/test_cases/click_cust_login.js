@@ -6,7 +6,7 @@ fixture `its 3am`
 
 
 // MongoDB configuration
-const mongoUrl = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/?retryWrites=true&w=majority&appName=testResults';
+const mongoUrl = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/';
 const dbName = 'app_test_results';
 const collectionName = 'testResults';
 
