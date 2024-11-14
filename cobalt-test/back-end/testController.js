@@ -3,7 +3,7 @@ const browsers = ['chrome', 'firefox', 'edge', 'opera']
 const testFolder = '../back-end/test_cases';
 
 const runTest = (req, res) => {
-    exec(`testcafe ${browsers} ${testFolder}`, (error, stdout, stderr) => {
+    exec(`testcafe ${browsers} ${testFolder} -- concurrently 2`, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing test: ${error.message}`);
             return res.status(500).json({ message: 'Test execution failed', error: error.message });
@@ -21,8 +21,8 @@ const runTest = (req, res) => {
 
 const runSelectedTest = (req, res) => {
     const { testCases } = req.body;
-    const testCaseFiles = testCases.map(testCase => `${testFolder}/${testCase}.js`).join(' ');
-    exec(`testcafe ${browsers} ${testCaseFiles}`, (error, stdout, stderr) => {
+    const testCaseFiles = testCases.map(testCase => `${testFolder}/${testCase}`).join(' ');
+    exec(`testcafe ${browsers} ${testCaseFiles} -- concurrently 2`, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing test: ${error.message}`);
             return res.status(500).json({ message: 'Test execution failed', error: error.message });

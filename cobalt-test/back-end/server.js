@@ -1,5 +1,5 @@
 const express = require('express');
-const { runTest } = require('./testController');
+const { runTest, runSelectedTest } = require('./testController');
 const signIn = require('./signInController');
 const getTestCaseStatus = require('./testCaseStatusController');
 const getTestCaseStatusByBrowser = require('./statusByBrowserController');
@@ -19,6 +19,7 @@ app.get('/testcases', getTestCases);
 app.get('/alltestcases', getAllTestCases);
 app.post('/signin', signIn);
 app.post('/run-test', runTest);
+app.post('/run-selected-test', runSelectedTest);
 
 testCaseUpdate();
 

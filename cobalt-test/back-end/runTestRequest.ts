@@ -25,7 +25,7 @@ const runTestRequest = async () => {
 
 const runSelectedTestRequest = async (testCases: string[]) => {
     try {
-        const response = await fetch('http://localhost:3000/run-test', {
+        const response = await fetch('http://localhost:3000/run-selected-test', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
