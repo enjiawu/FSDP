@@ -1,10 +1,6 @@
 import { Selector } from 'testcafe';  
 import { MongoClient } from 'mongodb';
 
-fixture `its 3am`  
-    .page `https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login` 
-
-
 // MongoDB configuration
 const mongoUrl = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/';
 const dbName = 'app_test_results';
@@ -80,26 +76,21 @@ async function logTestResult(t, status, errorDetails = null, startTime, endTime)
         await client.close();
     }
 }
+fixture`Customer Login` 
+    .page`https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login`; 
 
-
-test('Login as customer test', async t => {   
-    const startTime = new Date();
-    const endTime = new Date();  // Capture end time when marking as pending
-    await logTestResult(t, 'Pending', null, startTime, endTime); 
-
-    const customerButton = Selector('button').withText('Customer Login');  
-    let status = 'Passed';
-    let errorDetails = null;
-    try {  
-        await t  
-            .click(customerButton);
-    } catch (error) {  
-        console.error('Test failed:', error);  
-        status = 'Failed';
-        await logTestResult(t, status, error.message, startTime, endTime);
-        throw error;
-    } finally {
-        const endTime = new Date();
-        await logTestResult(t, status, errorDetails, startTime, endTime);
-    }
+test("Login as customer", async (t) => { 
+    const customerButton = Selector("button").withText("Customer Login"); 
+    try { 
+        await t.click(customerButton); 
+        await t.click(Selector("#userSelect")); 
+        await t.click(Selector("option").withText("Harry Potter")); 
+        await t.click(Selector("button").withText("Login")); 
+        await t.expect(Selector("strong span").innerText).eql("Harry Potter"); 
+        await logTestResult(t, "Passed"); 
+    } catch (error) { 
+        console.error("Test failed:", error); 
+        await logTestResult(t, "Failed", error.message); 
+        throw error; 
+    } 
 }); 

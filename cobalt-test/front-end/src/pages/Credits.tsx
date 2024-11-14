@@ -51,7 +51,7 @@ const Credits: React.FC = () => {
           Wu Enjia - Project Lead & Front End Developer
         </p>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-          Jayme Chua - Automation Engineer
+          Jayme Chua - Project Manager & Automation Engineer
         </p>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
           Timothy Chai - Automation Engineer
