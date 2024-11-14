@@ -24,13 +24,13 @@ const getTestCaseStatusByBrowser = async (req, res) => {
 
     const results = await collection.aggregate(pipeline).toArray();
     const browserStatusData = {
-      chromium: [0, 0, 0],
+      //chromium: [0, 0, 0],
       chrome: [0, 0, 0],
-      'chrome-canary': [0, 0, 0],
-      edge: [0, 0, 0],
+      //'chrome-canary': [0, 0, 0],
+      'microsoft edge': [0, 0, 0],
       firefox: [0, 0, 0],
       opera: [0, 0, 0],
-      safari: [0, 0, 0],
+      //safari: [0, 0, 0],
     };
 
     // Map the results into the format we need
