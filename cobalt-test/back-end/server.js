@@ -21,7 +21,7 @@ app.post('/signin', signIn);
 app.post('/run-test', runTest);
 app.post('/run-selected-test', runSelectedTest);
 
-testCaseUpdate();
+//testCaseUpdate();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
