@@ -1,8 +1,8 @@
 import React from 'react';
 import CardDataStats from '../../components/Cards/CardDataStats';
-import OverallBrowserStatus from '../../components/Charts/OverallBrowserStatus';
-import OverallTestCaseStatus from '../../components/Charts/OverallTestCaseStatus';
-import TestCaseTable from '../../components/Tables/TestCaseTable';
+import OverallBrowserStatus from '../../components/Charts/OverallBrowserStatus-d';
+import OverallTestCaseStatus from '../../components/Charts/OverallTestCaseStatus-d';
+import TestCaseTable from '../../components/Tables/TestCaseTable-d';
 import { runTestRequest } from '../../../../back-end/runTestRequest'
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useParams } from 'react-router-dom';

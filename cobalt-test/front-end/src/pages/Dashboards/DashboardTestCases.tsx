@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AllTestCasesTable from '../../components/Tables/AllTestCasesTable';
+import AllTestCasesTable from '../../components/Tables/AllTestCasesTable-d';
 import UploadCard from '../../components/UploadCard';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useParams } from 'react-router-dom';
