@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/general.css';
 import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 
@@ -12,72 +12,27 @@ interface TestCase {
   status: 'Passed' | 'Failed' | 'Pending';
 }
 
-const testCases: TestCase[] = [
-  {
-    id: 1,
-    title: 'customerLogin.js',
-    description: 'This test verifies that the login functionality works as expected.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 2, 
-    title: 'customerDepositMoney.js',
-    description: 'Verify customer deposit increases balance successfully.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 3,
-    title: 'customerWithdrawMoney.js',
-    description: 'Verify customer withdrawal decreases balance successfully.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 4,
-    title: 'customerWithdrawInsufficientFunds.js',
-    description: 'Verify large withdrawal fails due to insufficient funds.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 5,
-    title: 'customerCheckTransactions.js',
-    description: 'Verify customer can view transaction history.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 6,
-    title: 'managerAddCustomer.js',
-    description: 'Verify manager can add customer with pop-up confirmation.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 7,
-    title: 'managerOpenAccount.js',
-    description: 'Verify manager can open account, saves account number.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-  {
-    id: 8,
-    title: 'managerDeleteCustomer.js',
-    description: 'Checks if users receive email notifications for key events.',
-    timeTaken: 10,
-    status: 'Passed',
-  },
-];
-
 const TestCaseTable = () => {
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?:string} | null>(null);
+  const [testCases, setTestCases] = useState<TestCase[]>([]); // State to store test cases
+  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: string } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const [filter, setFilter] = useState<'All' | 'Passed' | 'Failed' | 'Pending'>('All');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Simulating a fetch call to get test cases from an API or database
+  useEffect(() => {
+    const fetchTestCases = async () => {
+      const response = await fetch('http://localhost:3000/testcases');
+      const data: TestCase[] = await response.json();
+      console.log("Fetched test cases:", data); // Log the fetched data
+      setTestCases(data);
+      
+    };
+
+    fetchTestCases();
+  }, []); // Empty dependency array ensures it runs only once on mount
 
   const filteredTestCases = testCases.filter(testCase =>
     (filter === 'All' || testCase.status === filter) &&
@@ -111,7 +66,6 @@ const TestCaseTable = () => {
       left: rect.left + window.scrollX + rect.width / 2 - 400, // Adjusted to center the tooltip
     });
   };
-  
 
   const hideTooltip = () => {
     setTooltipVisible(false);
@@ -128,39 +82,39 @@ const TestCaseTable = () => {
           <h2 className="text-xl font-semibold dark:text-white">Test Case Status</h2>
         </div>
         <div className="flex items-center">
-            <div className="relative mr-4">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg
+          <div className="relative mr-4">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
                 className="h-5 w-5 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
-                >
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 2a7.5 7.5 0 010 14.65z"
                 />
-                </svg>
-              </span>
-              <input
-                type="text"
-                placeholder="Search Test Cases..."
-                className="border border-gray-400 rounded p-2 pl-10 pr-15 dark:bg-black dark:text-white"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="Search Test Cases..."
+              className="border border-gray-400 rounded p-2 pl-10 pr-15 dark:bg-black dark:text-white"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <DropdownSortBy 
             value={filter}
             onChange={(value) => setFilter(value as 'Passed' | 'Failed' | 'Pending' | 'All')}
-            options={
-              [{ value: 'All', label: 'All' },
-                { value: 'Passed', label: 'Passed' },
-                { value: 'Failed', label: 'Failed' },
-                { value: 'Pending', label: 'Pending' },]
-            }
+            options={[
+              { value: 'All', label: 'All' },
+              { value: 'Passed', label: 'Passed' },
+              { value: 'Failed', label: 'Failed' },
+              { value: 'Pending', label: 'Pending' },
+            ]}
           />
         </div>
       </div>
@@ -204,13 +158,7 @@ const TestCaseTable = () => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      testCase.status === 'Passed'
-                        ? 'bg-success text-success'
-                        : testCase.status === 'Failed'
-                        ? 'bg-danger text-danger'
-                        : 'bg-warning text-warning'
-                    }`}
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${testCase.status === 'Passed' ? 'bg-success text-success' : testCase.status === 'Failed' ? 'bg-danger text-danger' : 'bg-warning text-warning'}`}
                   >
                     {testCase.status}
                   </p>
@@ -239,10 +187,8 @@ const TestCaseTable = () => {
             <p>{modalContent.description}</p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
-            {modalContent.errorMessage && (
-              <p><strong>Error Message:</strong> {modalContent.errorMessage}</p>
-            )}
-            <button className="mt-2 bg-primary text-white rounded px-4 py-2 hover:bg-secondary" onClick={closeModal}>Close</button>
+            {modalContent.errorMessage && <p><strong>Error Message:</strong> {modalContent.errorMessage}</p>}
+            <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded" onClick={closeModal}>Close</button>
           </div>
         </div>
       )}
