@@ -77,6 +77,7 @@ const applicationResults: ApplicationResult[] = [
 ];
 
 const HistoryTableByApplication = () => {
+  const applicationTitle = "XYZ Bank";
   const [openDropdown, setOpenDropdown] = React.useState<number | null>(null);
   const [filter, setFilter] = useState<
   'id-asc' | 'id-desc' | 'dateTime-asc' | 'dateTime-desc' | 'status-passed' | 'status-failed' | 'passed-asc' | 'passed-desc'
@@ -215,7 +216,7 @@ const HistoryTableByApplication = () => {
                         <button
                           onClick={(e) => {
                           e.stopPropagation();
-                          goToDashboard(result.title, result.id);
+                          goToDashboard(applicationTitle, result.id);
                           }}
                           className="flex items-center text-primary font-bold"
                         >
@@ -224,7 +225,7 @@ const HistoryTableByApplication = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            goToDashboard(result.title, result.id);
+                            goToDashboard(applicationTitle, result.id);
                             setTimeout(() => window.print(), 1000);
                           }}
                           className="flex items-center text-primary font-bold"

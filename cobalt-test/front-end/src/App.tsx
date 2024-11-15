@@ -114,6 +114,14 @@ function App() {
                         }
                       />
                       <Route
+                        path={`/dashboards/${encodeURIComponent(app.title)}/:id`}
+                        element={
+                          <>
+                            <Dashboard />
+                          </>
+                        }
+                      />
+                      <Route
                         path={`/dashboards/${encodeURIComponent(app.title)}/dashboard-testcases`}
                         element={
                           <>
@@ -133,6 +141,14 @@ function App() {
                   ))}
                   <Route
                     path="/dashboards/:appTitle"
+                    element={
+                      <>
+                        <Dashboard />
+                      </>
+                    }
+                  />
+                  <Route 
+                    path="/dashboards/:appTitle/:id"
                     element={
                       <>
                         <Dashboard />
