@@ -1,7 +1,7 @@
-# Full Stack Development Project 2024
+# Full Stack Development Project
 
 <div align="center">
-  <a href="https://github.com/enjiawu/CobaltTest">
+  <a href="https://github.com/enjiawu/FSDP/cobalt-test/front-end/src/images/logo/logo.png">
     <img src="cobalt-banner.jpg" alt="CobaltTest Logo" width="400" height="auto">
   </a>
 </div>
