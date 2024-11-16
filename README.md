@@ -1,10 +1,12 @@
 # Full Stack Development Project
 
-<div align="center">
-  <a href="https://github.com/enjiawu/FSDP/cobalt-test/front-end/src/images/logo/logo.png">
-    <img src="cobalt-banner.jpg" alt="CobaltTest Logo" width="400" height="auto">
+<br/>
+
+<p align="center">
+  <a href="https://github.com/enjiawu/FSDP">
+    <img src="/cobalt-test/front-end/src/images/logo/logo.png" alt="CobaltTest Logo" width="400" height="auto"/>
   </a>
-</div>
+</p>
 
 ## The Team
 
