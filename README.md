@@ -96,5 +96,3 @@ To set up and run CobaltTest locally, follow these steps.
 - **TailAdmin React Dashboard Template**: The UI for this application was built using the help of [TailAdmin React Dashboard Template](https://tailadmin.com/react).
 - **TestCafe**: For automated browser testing.
 - **Jenkins**: For CI/CD integration.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
