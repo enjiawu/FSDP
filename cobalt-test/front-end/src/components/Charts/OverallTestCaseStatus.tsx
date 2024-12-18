@@ -4,8 +4,8 @@ import ReactApexChart from 'react-apexcharts';
 
 const testCaseStatusData = {
   statuses: [
-    { name: 'Passed', value: 75, color: '#28a745' },    // Green for Passed
-    { name: 'Pending', value: 15, color: '#ffc107' },   // Yellow for Pending
+    { name: 'Passed', value: 90, color: '#28a745' },    // Green for Passed
+    //{ name: 'Pending', value: 15, color: '#ffc107' },   // Yellow for Pending
     { name: 'Failed', value: 10, color: '#dc3545' },    // Red for Failed
   ],
 };
