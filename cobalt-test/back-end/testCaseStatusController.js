@@ -9,16 +9,16 @@ const getTestCaseStatus = async (req, res) => {
         await client.connect();
         console.log('Connected to MongoDB');
     
-        const database = client.db(dbName);  // Replace with your database name
-        const collection = database.collection('testResults');  // Replace with your collection name
+        const database = client.db(dbName); 
+        const collection = database.collection('testResults'); 
     
         // Query the database and group by status
         const statuses = await collection.aggregate([
             {
-            $group: {
-                _id: "$status",  // Grouping by the status field
-                count: { $sum: 1 }  // Counting the occurrences of each status
-            }
+                $group: {
+                    _id: "$status",  // Grouping by the status field
+                    count: { $sum: 1 }  // Counting the occurrences of each status
+                }
             }
         ]).toArray();
 
@@ -51,20 +51,20 @@ const getTestCaseStatus = async (req, res) => {
             const percentage = (status.count / totalTestCases) * 100;
 
             return {
-            name: status._id,
-            value: percentage.toFixed(2),
-            color: color
+                name: status._id,
+                value: percentage.toFixed(2),
+                color: color
             };
         });
-    
+        
         // Return the formatted statuses
         res.status(200).json(formattedStatuses);
-        } catch (error) {
+    } catch (error) {
         console.error("Error in getting test case status:", error);
         res.status(500).json({ message: "Internal Server Error" });
-        } finally {
-        await client.close();  // Always close the MongoDB connection
-        }
-    };
+    } finally {
+        await client.close(); 
+    }
+};
 
 module.exports = getTestCaseStatus;
