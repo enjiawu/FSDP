@@ -287,6 +287,31 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Settings --> */}
 
+              {/* <!-- No-Code Test Case Creation --> */}
+              <li>
+                <NavLink
+                  to="/no-code"
+                  className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out 
+                    ${pathname.includes('no-code') || pathname === '/no-code' ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} 
+                    dark:text-white dark:hover:bg-primary`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 100 100"
+                    width="18"
+                    height="24"
+                    className="stroke-current"
+                    stroke-width="10"
+                    fill="none"
+                  >
+                    <circle cx="50" cy="50" r="45" />
+                    <line x1="20" y1="80" x2="80" y2="20" />
+                  </svg>
+                  No-Code TC Creation
+                </NavLink>
+              </li>
+              {/* <!-- No-Code Test Case Creation --> */}
+
               {/* <!-- Menu Item Help --> */}
               <li>
               <NavLink
