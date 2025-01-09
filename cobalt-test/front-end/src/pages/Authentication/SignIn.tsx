@@ -54,7 +54,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
      //alert('An error occurred while logging in.');
      try {
       // Fallback to the secondary endpoint
-      const fallbackResponse = await fetch('https://enjiawu.github.io/FSDP/signin', {
+      const fallbackResponse = await fetch('https://enjiawu.github.io/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
