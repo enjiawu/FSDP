@@ -18,6 +18,7 @@ import Help from './pages/Help';
 import React from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar/index';
+import NoCode from './pages/NoCode';
 
 // Dummy data for applications
 const dummyApplications = [
@@ -114,6 +115,14 @@ function App() {
                         }
                       />
                       <Route
+                        path={`/dashboards/${encodeURIComponent(app.title)}/:id`}
+                        element={
+                          <>
+                            <Dashboard />
+                          </>
+                        }
+                      />
+                      <Route
                         path={`/dashboards/${encodeURIComponent(app.title)}/dashboard-testcases`}
                         element={
                           <>
@@ -133,6 +142,14 @@ function App() {
                   ))}
                   <Route
                     path="/dashboards/:appTitle"
+                    element={
+                      <>
+                        <Dashboard />
+                      </>
+                    }
+                  />
+                  <Route 
+                    path="/dashboards/:appTitle/:id"
                     element={
                       <>
                         <Dashboard />
@@ -198,6 +215,15 @@ function App() {
                       <>
                         <PageTitle title="All History | CobaltTest - OCBC Automated Testing" />
                         <AllHistory />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/no-code"
+                    element={
+                      <>
+                        <PageTitle title="No Code | CobaltTest - OCBC Automated Testing" />
+                        <NoCode />
                       </>
                     }
                   />

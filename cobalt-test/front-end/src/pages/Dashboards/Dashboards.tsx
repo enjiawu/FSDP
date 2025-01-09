@@ -11,16 +11,17 @@ const dummyApplications = [
     title: 'XYZ Bank', 
     imageSrc: './XYZ_icon.png', 
     description: 'Keep track of your spending and create budgets to save money.', 
-    category: 'Finance' 
+    category: 'Finance',
   },
   { 
     id: 2, 
     title: 'Dashboard1', 
     imageSrc: './dashboard.png', 
     description: 'Keep track and manage your applications in real-time.', 
-    category: 'Analytics' 
+    category: 'Analytics',
   },
 ];
+;
 
 const Dashboards: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -34,6 +35,11 @@ const Dashboards: React.FC = () => {
         : [...prevFavorites, appId]
     );
   };
+
+  // TODO:: Remove this 
+  React.useEffect(() => {
+    setFavorites(dummyApplications.map(app => app.id));
+  }, []);
 
   // Filter and sort applications
   const filteprimaryApplications = dummyApplications
