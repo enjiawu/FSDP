@@ -23,29 +23,37 @@ const testCaseUpdate = () => {
         if (change.operationType === 'insert') {
             const newTestResult = change.fullDocument;
 
-            const { testName, status, startTime, endTime } = newTestResult;
-            console.log(`Test name from test result: ${testName}`);
+            const { testID, status, startTime, endTime } = newTestResult;
+            console.log(`Test ID from test result: ${testID}`);
 
             // Calculate the time difference (in seconds) between startTime and endTime
             const timeTaken = (new Date(endTime) - new Date(startTime)) / 1000;
 
             // Find the corresponding test case based on the test name
-            const testCase = await testCaseCollection.findOne({ TestCase: testName });
+            const testCase = await testCaseCollection.findOne({ testID: testID});
             console.log("Test Case: ", testCase);
 
             if (testCase) {
+
+                 // Calculate total test cases and passed tests dynamically
+                const totalTestCases = await testResultsCollection.countDocuments({testID: testID});
+                const passedTestCases = await testResultsCollection.countDocuments({ testID: testID, status: 'Passed' });
+
+                // Calculate the success rate
+                const successRate = totalTestCases > 0 ? (passedTestCases / totalTestCases) * 100 : 0;
                 await testCaseCollection.updateOne(
-                { TestCase: testName }, // Use test name to find the matching test case
+                { testID: testID }, // Use test name to find the matching test case
                 {
                     $set: {
                     status, // Update the status
                     TimeTaken: timeTaken, // Update the time taken
+                    SuccessRate: successRate,
                     },
                 }
             );
-            console.log(`Test case "${testName}" updated with new status and time taken.`);
+            console.log(`Test case "${testID}" updated with new status and time taken.`);
             } else {
-            console.log(`Test case with name "${testName}" not found.`);
+            console.log(`Test case with ID "${testID}" not found.`);
             }
         }
         });
