@@ -56,15 +56,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected 
 };
 
 const NoCodeTestCaseInput: React.FC = () => {
-    const [selectedBrowser, setSelectedBrowser] = useState<string | null>(null);
     const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
-
-    const browserOptions = [
-        { value: "chrome", label: "Chrome" },
-        { value: "firefox", label: "Firefox" },
-        { value: "opera", label: "Opera" },
-        { value: "edge", label: "Microsoft Edge" },
-    ];
 
     const applicationOptions = [ // TODO:: Replace with actual data
         { value: "app1", label: "Application 1" },
@@ -91,14 +83,6 @@ const NoCodeTestCaseInput: React.FC = () => {
                 className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Description"
                 rows={4}
-            />
-
-            {/* Browser Dropdown */}
-            <Dropdown
-                label="Browser"
-                options={browserOptions}
-                onSelect={setSelectedBrowser}
-                selected={selectedBrowser}
             />
 
             {/* Application Dropdown */}
