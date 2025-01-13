@@ -7,19 +7,20 @@ const dbName = 'app_test_results';
 const collectionName = 'testResults'; 
  
 // Function to log the main test result 
-async function logTestResult(t, status, errorDetails = null) { 
+async function logTestResult(t, status, errorDetails, startTime, endTime) { 
     const client = new MongoClient(mongoUrl); 
     const testResult = { 
+        testID: 7,
         testName: t.testRun.test.name, 
         status: status, // 'Passed' or 'Failed' 
-        startTime: new Date(), 
-        endTime: new Date(), 
+        startTime: startTime, 
+        endTime: endTime, 
         browser: { 
             name: t.browser.name, 
             version: t.browser.version, 
             platform: t.browser.platform 
         }, 
-        errorLogs: errorDetails 
+        errorLogs: errorDetails || null
     }; 
     try { 
         // Connect to MongoDB and insert the result 
@@ -52,6 +53,7 @@ test('Manager Open Account', async t => {
     const currencyDropdown = Selector('select').withAttribute('id', 'currency');
     const currencyOption = Selector('option').withText('Dollar');
     const processButton = Selector('button').withText('Process');
+    const startTime = new Date();
 
     await t.setNativeDialogHandler(() => true);
     try {   
@@ -75,11 +77,18 @@ test('Manager Open Account', async t => {
         await t.expect(dialogs[1].text).contains('Customer added successfully');
         await t.expect(dialogs[0].type).eql('alert');
         await t.expect(dialogs[0].text).contains('Account created successfully');
-        await logTestResult(t, 'Passed'); 
+        const endTime = new Date();
+        await logTestResult(t, 'Passed', null, startTime, endTime); 
 
     } catch (error) {   
         console.error('Test failed:', error);   
-        await logTestResult(t, 'Failed', error.message); 
+        const endTime = new Date();
+        const errorDetails = {
+            message: error.errMsg, 
+            stack: error.callsite,   
+            code: error.code
+        };
+        await logTestResult(t, 'Failed', errorDetails, startTime, endTime); 
         throw error; 
     }   
 }); 
