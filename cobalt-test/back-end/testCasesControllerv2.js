@@ -19,11 +19,12 @@ const getTestCases = async (req, res) => {
 
         // Aggregate to find the latest status for each testID
         const latestResults = await testResultsCollection.aggregate([
-            { $sort: { updatedAt: -1 } }, // Sort by most recent timestamp
+            { $sort: { endTime: -1 } }, // Sort by most recent timestamp
             {
                 $group: {
                     _id: "$testID",          // Group by testID
                     latestStatus: { $first: "$status" }, // Get the latest status
+                    latestErrMsg: { $first: { $ifNull: ["$errorLogs", "No Error"] } }
                 },
             },
         ]).toArray();
@@ -33,6 +34,10 @@ const getTestCases = async (req, res) => {
         latestResults.forEach(result => {
             statusMap[result._id] = result.latestStatus;
         });
+        const errLogMap = {};
+        latestResults.forEach(result => {
+            errLogMap[result._id] = result.latestErrMsg;
+        });
 
         // Map test cases with their respective statuses
         const mappedTestCases = testCases.map(testCase => ({
@@ -40,7 +45,8 @@ const getTestCases = async (req, res) => {
             title: testCase.TestCase,
             description: testCase.Description,
             timeTaken: testCase.TimeTaken,
-            status: statusMap[testCase.testID] || 'Unknown', // Default to 'Unknown' if no status found
+            status: testCase.status || statusMap[testCase.testID] || 'Unknown', // Default to 'Unknown' if no status found
+            errorMessage: errLogMap[testCase.testID]
         }));
 
         // Send the mapped test cases as the response
