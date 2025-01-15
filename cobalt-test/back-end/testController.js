@@ -4,7 +4,7 @@ const testFolder = '../back-end/test_cases';
 //const checkBrowserAvailability = require('./browserController');
 
 const runTest = (req, res) => {
-    res.json({ message: 'Test execution started' });
+    //res.json({ message: 'Test execution started' });
     /*
     const { continueWithAvailable } = req.body;
     const { availableBrowsers, missingBrowsers } = checkBrowserAvailability();
