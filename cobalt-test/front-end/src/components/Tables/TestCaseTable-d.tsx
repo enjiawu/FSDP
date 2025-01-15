@@ -7,6 +7,9 @@ interface TestCase {
   id: number;
   title: string;
   description: string;
+  purpose: string;
+  expectedOutcome: string;
+  steps: Array<string>;
   timeTaken: number; // Time taken in seconds
   errorMessage?: ErrorMessage;
   status: 'Passed' | 'Failed' | 'Pending';
@@ -20,7 +23,7 @@ interface ErrorMessage {
 
 const TestCaseTable = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]); // State to store test cases
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: ErrorMessage } | null>(null);
+  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: ErrorMessage, purpose: string, expectedOutcome: string, steps: Array<string> } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -52,7 +55,10 @@ const TestCaseTable = () => {
       description: testCase.description,
       status: testCase.status,
       timeTaken: testCase.timeTaken,
-      errorMessage: testCase.errorMessage as ErrorMessage
+      errorMessage: testCase.errorMessage as ErrorMessage,
+      purpose: testCase.purpose,
+      expectedOutcome: testCase.expectedOutcome,
+      steps: testCase.steps
     });
   };
 
@@ -226,9 +232,18 @@ const TestCaseTable = () => {
       {/* Modal for test case details */}
       {modalContent && (
         <div className="fixed inset-0 flex items-center justify-center" onClick={closeModal}>
-          <div className="bg-white p-4 rounded shadow-lg maw-w-full max-h-full overflow-auto" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '500px', maxWidth: '500px', overflowY: 'auto' }}>
+          <div className="bg-white p-6 rounded shadow-lg w-[90%] max-w-[800px] max-h-[90%] overflow-y-auto overflow-x-hidden" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90%', maxWidth: '800px', overflowY: 'auto', overflowX: 'hidden' }}>
             <h5 className="font-medium">{modalContent.title}</h5>
             <p>{modalContent.description}</p>
+            <p><strong>Purpose:</strong> {modalContent.purpose}</p>
+            <p><strong>Expected Outcome:</strong> {modalContent.expectedOutcome}</p>
+            <p><strong>Steps:</strong> 
+            <ul>
+              {modalContent.steps.map((step, index) => (
+                <li key={index}>{step}</li>
+              ))}
+            </ul>
+            </p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
             {modalContent.errorMessage && <p><strong>Error:</strong> {typeof modalContent.errorMessage === 'object' ? 
