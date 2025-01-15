@@ -38,6 +38,10 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
        body: JSON.stringify({ username, password }),
      });
 
+     if (!response.ok) {
+      throw new Error('Primary endpoint failed, trying alternate endpoint (For GitHub Pages)');
+     }
+
      const data = await response.json();
 
      if (response.status === 200) {
@@ -47,7 +51,27 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
      }
    } catch (error) {
      console.error('Login error:', error);
-     alert('An error occurred while logging in.');
+     //alert('An error occurred while logging in.');
+     try {
+      // Fallback to the secondary endpoint
+      const fallbackResponse = await fetch('https://enjiawu.github.io/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const fallbackData = await fallbackResponse.json();
+      if (fallbackResponse.status === 200) {
+        onLogin(fallbackData.token);
+      } else {
+        alert(fallbackData.message);
+      }
+    } catch (fallbackError) {
+      console.error('Fallback endpoint error:', fallbackError);
+      alert('Both primary and fallback endpoints failed. Please try again later.');
+    }
    }
   };
     /*} else {

@@ -3,7 +3,7 @@ const { runTest, runSelectedTest } = require('./testController');
 const signIn = require('./signInController');
 const getTestCaseStatus = require('./testCaseStatusController');
 const getTestCaseStatusByBrowser = require('./statusByBrowserController');
-const getTestCases = require('./testCasesController');
+const getTestCases = require('./testCasesControllerv2');
 const getAllTestCases = require('./alltestCasesController')
 const testCaseUpdate = require('./testCaseUpdateController');
 const cors = require('cors');
@@ -21,7 +21,7 @@ app.post('/signin', signIn);
 app.post('/run-test', runTest);
 app.post('/run-selected-test', runSelectedTest);
 
-//testCaseUpdate();
+testCaseUpdate();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

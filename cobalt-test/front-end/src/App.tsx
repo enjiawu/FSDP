@@ -18,6 +18,7 @@ import Help from './pages/Help';
 import React from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar/index';
+import NoCode from './pages/NoCode';
 
 // Dummy data for applications
 const dummyApplications = [
@@ -214,6 +215,15 @@ function App() {
                       <>
                         <PageTitle title="All History | CobaltTest - OCBC Automated Testing" />
                         <AllHistory />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/no-code"
+                    element={
+                      <>
+                        <PageTitle title="No Code | CobaltTest - OCBC Automated Testing" />
+                        <NoCode />
                       </>
                     }
                   />
