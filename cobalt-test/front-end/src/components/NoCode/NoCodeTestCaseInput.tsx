@@ -57,14 +57,51 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected 
 
 const NoCodeTestCaseInput: React.FC = () => {
     const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
+    const [testCaseName, setTestCaseName] = useState("");
+    const [testCaseDescription, setTestCaseDescription] = useState("");
+    const [testCaseSteps, setTestCaseSteps] = useState("");
+    const [expectedResult, setExpectedResult] = useState("");
+    const [generatedTestCase, setGeneratedTestCase] = useState("");
 
     const applicationOptions = [ // TODO:: Replace with actual data
-        { value: "app1", label: "Application 1" },
-        { value: "app2", label: "Application 2" },
+        { value: "Dashboard-1", label: "Dashboard 1" },
+        { value: "XYZ-Bank", label: "XYZ Bank" },
     ];
 
+    const handleGenerateTestCase = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/generatetestcase", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                testCaseName,
+                testCaseDescription,
+                testCaseApplication: selectedApplication,
+                testCaseSteps,
+                testCaseExpectedResults: expectedResult}),
+            });
+
+            if (!response.ok) {
+                throw new Error('Response not ok.');
+            }
+        
+            const data = await response.json();
+        
+            if (response.status === 200) {
+                setGeneratedTestCase(data.testCase);
+            } else {
+                alert(data.error);
+            }
+            
+        } catch (error) {
+            console.error("Error generating test case:", error);
+        }
+    };
+
     return (
-        <div className="flex flex-col w-full h-full p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 cursor-pointer">
+        <div className="flex flex-col w-full h-full bg-gray-100  rounded-lg shadow-lg dark:bg-gray-800  cursor-pointer">
             {/* Test Case Name */}
             <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Test Case Name:
@@ -113,12 +150,20 @@ const NoCodeTestCaseInput: React.FC = () => {
                 rows={4}
             />
 
-<button
-                    onClick={() => {}}
-                    className="w-full py-2 mt-8 bg-primary hover:bg-secondary text-white font-bold rounded-md disabled:bg-gray-300"
-                >
-                    Generate Test Case
-                </button>
+            <button
+                onClick={handleGenerateTestCase}
+                className="w-full py-2 mt-8 bg-primary hover:bg-secondary text-white font-bold rounded-md disabled:bg-gray-300"
+            >
+                Generate Test Case
+            </button>
+
+                {/* Display generated test case */}
+                {generatedTestCase && (
+                    <div className="mt-6 p-4 bg-gray-200 rounded-lg dark:bg-gray-700">
+                        <h3 className="text-lg font-medium">Generated Test Case</h3>
+                        <pre>{generatedTestCase}</pre>
+                    </div>
+                )}
         </div>
     );
 };
