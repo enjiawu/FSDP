@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AllTestCasesTable from '../components/Tables/AllTestCasesTable-d';
+import AllTestCasesTable from '../components/Tables/AllTestCasesTable';
 import UploadCard from '../components/UploadCard';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 
