@@ -1,171 +1,203 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { FaClipboard, FaEdit, FaDownload } from 'react-icons/fa';
 
-interface DropdownProps {
-    label: string;
-    options: { value: string; label: string }[];
-    onSelect: (value: string) => void;
-    selected: string | null;
+interface NoCodeTestCaseOutputProps {
+  generatedTestCase: string | null;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <div className="relative w-full mt-4">
-            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {label}
-            </label>
-            <div
-                className="relative w-full p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary cursor-pointer flex justify-between items-center"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <span>
-                    {selected ? options.find((opt) => opt.value === selected)?.label : `Select ${label}`}
-                </span>
-                <svg
-                    className={`w-5 h-5 transform ${isOpen ? 'rotate-180' : ''}`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fillRule="evenodd"
-                        d="M10 3a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L10 5.414l-4.293 4.293A1 1 0 014.293 8.293l5-5A1 1 0 0110 3z"
-                        clipRule="evenodd"
-                    />
-                </svg>
-            </div>
-            {isOpen && (
-                <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg dark:bg-gray-700 dark:border-gray-600">
-                    {options.map((option) => (
-                        <li
-                            key={option.value}
-                            onClick={() => {
-                                onSelect(option.value);
-                                setIsOpen(false);
-                            }}
-                            className="p-3 text-base cursor-pointer hover:bg-red-500 hover:text-white"
-                        >
-                            {option.label}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+// Utility function to clean delimiters
+const cleanCodeSnippet = (code: string) => {
+  return code.replace(/^```javascript\s*|\s*```$/g, '');
 };
 
-const NoCodeTestCaseInput: React.FC = () => {
-    const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
-    const [testCaseName, setTestCaseName] = useState("");
-    const [testCaseDescription, setTestCaseDescription] = useState("");
-    const [testCaseSteps, setTestCaseSteps] = useState("");
-    const [expectedResult, setExpectedResult] = useState("");
-    const [generatedTestCase, setGeneratedTestCase] = useState("");
+const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTestCase }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState(generatedTestCase ? cleanCodeSnippet(generatedTestCase) : '');
+  const [improvementPrompt, setImprovementPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const applicationOptions = [ // TODO:: Replace with actual data
-        { value: "Dashboard-1", label: "Dashboard 1" },
-        { value: "XYZ-Bank", label: "XYZ Bank" },
-    ];
+  const handleCopy = () => {
+    if (content) {
+      navigator.clipboard.writeText(content);
+      alert('Code copied to clipboard!');
+    }
+  };
 
-    const handleGenerateTestCase = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/generatetestcase", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                testCaseName,
-                testCaseDescription,
-                testCaseApplication: selectedApplication,
-                testCaseSteps,
-                testCaseExpectedResults: expectedResult}),
-            });
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
 
-            if (!response.ok) {
-                throw new Error('Response not ok.');
-            }
-        
-            const data = await response.json();
-        
-            if (response.status === 200) {
-                setGeneratedTestCase(data.testCase);
-            } else {
-                alert(data.error);
-            }
-            
-        } catch (error) {
-            console.error("Error generating test case:", error);
+  const handleDownload = () => {
+    if (content) {
+      const blob = new Blob([content], { type: 'text/javascript' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'generatedTestCase.js';
+      link.click();
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    adjustTextareaHeight();
+  };
+
+  const adjustTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'; // Reset height to recalculate
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height based on scrollHeight
+    }
+  };
+
+  const handlePromptSubmit = async () => {
+    setLoading(true);
+    if (improvementPrompt && content) {
+      try {
+        const response = await fetch("http://localhost:3000/improvetestcase", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              testCase: content,
+              improvements: improvementPrompt
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Response not ok.');
         }
-    };
 
-    return (
-        <div className="flex flex-col w-full h-full dark:bg-gray-800 cursor-pointer">
-            {/* Test Case Name */}
-            <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Test Case Name:
-            </label>
-            <input
-                type="text"
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
-                placeholder="Enter Test Case Name"
-            />
+        const data = await response.json();
 
-            {/* Test Case Description */}
-            <label className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Test Case Description:
-            </label>
+        if (response.status === 200) {
+            // Update the content with the improved code
+            setContent(cleanCodeSnippet(data.improvement));
+        } else {
+            alert(data.error);
+        }
+
+      } catch (error) {
+          console.error("Error generating test case:", error);
+      } finally {
+          setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) adjustTextareaHeight();
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (generatedTestCase) {
+      setContent(cleanCodeSnippet(generatedTestCase));
+    }
+  }, [generatedTestCase]);
+
+  return (
+    <div className="flex flex-col w-full h-full dark:bg-gray-800 cursor-pointer">
+      {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-4 rounded-lg shadow-lg">
+                  <p className="text-lg font-medium">Generating...</p>
+              </div>
+          </div>
+      )}
+
+      {/* Prompt for Improvements Section */}
+      <div className="p-4 bg-gray-100 rounded-lg dark:bg-gray-700 mb-2">
+        <h3 className="text-lg font-medium dark:text-white mb-2">
+          Suggest Improvements
+        </h3>
+        <textarea
+          value={improvementPrompt}
+          onChange={(e) => {
+            setImprovementPrompt(e.target.value);
+            if (e.target.scrollHeight > e.target.clientHeight) {
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }
+          }}
+          placeholder="Describe what you'd like to improve about this code..."
+          className="w-full p-2 border border-gray-400 rounded-lg dark:bg-gray-800 dark:text-white mb-4"
+          style={{
+            fontFamily: 'sans-serif',
+            resize: 'none',
+            lineHeight: '1.5rem',
+            minHeight: '7.5rem', 
+          }}
+        />
+        <button
+          onClick={handlePromptSubmit}
+          className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors bg-primary"
+        >
+          Generate Improvements
+        </button>
+      </div>
+
+      {/* Code Display Section */}
+      {content && (
+        <div className="mt-6 p-4 bg-gray-200 rounded-lg dark:bg-gray-700">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium dark:text-white">Generated Test Case</h3>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleCopy}
+                className="flex items-center px-4 py-2 border border-primary-500 text-primary-500 rounded-lg hover:bg-primary-100 transition-colors"
+              >
+                <FaClipboard className="mr-2" />
+                Copy
+              </button>
+              <button
+                onClick={toggleEditMode}
+                className="flex items-center px-4 py-2 border border-primary-500 text-primary-500 rounded-lg hover:bg-primary-100 transition-colors"
+              >
+                <FaEdit className="mr-2" />
+                {isEditing ? 'Stop Editing' : 'Edit'}
+              </button>
+              <button
+                onClick={handleDownload}
+                className="flex items-center px-4 py-2 border border-primary-500 text-primary-500 rounded-lg hover:bg-primary-100 transition-colors"
+              >
+                <FaDownload className="mr-2" />
+                Download (.js)
+              </button>
+            </div>
+          </div>
+          {isEditing ? (
             <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
-                placeholder="Enter Test Case Description"
-                rows={4}
+              ref={textareaRef}
+              value={content}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-400 rounded-lg dark:bg-gray-800 dark:text-white"
+              style={{
+                fontFamily: 'monospace',
+                resize: 'none',
+                lineHeight: '1.5rem',
+                overflow: 'hidden',
+              }}
             />
-
-            {/* Application Dropdown */}
-            <Dropdown
-                label="Application"
-                options={applicationOptions}
-                onSelect={setSelectedApplication}
-                selected={selectedApplication}
-            />
-
-            {/* Test Case Steps */}
-            <label className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Test Case Steps:
-            </label>
-            <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
-                placeholder="Enter Test Case Steps"
-                rows={10}
-            />
-
-            {/* Expected Result */}
-            <label className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Expected Result:
-            </label>
-            <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
-                placeholder="Enter Expected Result"
-                rows={4}
-            />
-
-            <button
-                onClick={handleGenerateTestCase}
-                className="w-full py-2 mt-8 bg-primary hover:bg-secondary text-white font-bold rounded-md disabled:bg-gray-300"
+          ) : (
+            <SyntaxHighlighter
+              language="javascript"
+              style={vscDarkPlus}
+              showLineNumbers
+              customStyle={{
+                borderRadius: '0.5rem',
+                padding: '1rem',
+                fontSize: '0.9rem',
+              }}
             >
-                Generate Test Case
-            </button>
-
-                {/* Display generated test case */}
-                {generatedTestCase && (
-                    <div className="mt-6 p-4 bg-gray-200 rounded-lg dark:bg-gray-700">
-                        <h3 className="text-lg font-medium">Generated Test Case</h3>
-                        <pre>{generatedTestCase}</pre>
-                    </div>
-                )}
+              {content}
+            </SyntaxHighlighter>
+          )}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-export default NoCodeTestCaseInput;
+export default NoCodeTestCaseOutput;
