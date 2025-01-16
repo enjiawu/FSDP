@@ -112,9 +112,9 @@ const AllTestCasesTable = () => {
     setModalContent(testCase);
   };
 
-  const handleTestCaseTitleClick = (testCase: string) => {
+  const handleTestCaseTitleClick = (testCase: TestCase) => {
     // Redirect to the source control link when a test case title is clicked
-    const filePath = `https://github.com/enjiawu/OCBC_Applications/blob/main/XYZBank/${testCase}`;  // Replace with your actual source control path
+    const filePath = `https://github.com/enjiawu/OCBC_Applications/blob/main/XYZBank/${testCase.title}`;  // Replace with your actual source control path
     window.open(filePath, '_blank'); 
   };
   
@@ -173,8 +173,8 @@ const AllTestCasesTable = () => {
           Test Selected
       </button>
       
-      <div className="max-w-full overflow-x-auto h-100">
-        <table className="w-full table-auto">
+      <div className="max-w-full overflow-x-auto overflow-y-auto h-100">
+        <table className="w-full table-auto overflow-x-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="py-4 px-4 font-medium text-black dark:text-white">
@@ -205,7 +205,7 @@ const AllTestCasesTable = () => {
                   />
                 </td>
                 <td className="py-4 px-4">{testCase.id}</td>
-                <td className="py-4 px-4 cursor-pointer text-primary underline" onClick={() => handleTestCaseTitleClick(testCase.title)}>{testCase.title}</td>
+                <td className="py-4 px-4 cursor-pointer text-primary underline" onClick={() => handleTestCaseTitleClick(testCase)}>{testCase.title}</td>
                 <td
                   className="border-b border-[#eee] py-5 px-4 dark:border-strokedark cursor-pointer"
                   onMouseEnter={(e) => showTooltip(e, testCase.description)}

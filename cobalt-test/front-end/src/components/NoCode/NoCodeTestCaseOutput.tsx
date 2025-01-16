@@ -101,7 +101,7 @@ const NoCodeTestCaseInput: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col w-full h-full bg-gray-100  rounded-lg shadow-lg dark:bg-gray-800  cursor-pointer">
+        <div className="flex flex-col w-full h-full dark:bg-gray-800 cursor-pointer">
             {/* Test Case Name */}
             <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Test Case Name:

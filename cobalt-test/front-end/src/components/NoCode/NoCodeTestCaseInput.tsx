@@ -16,7 +16,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected 
                 {label}
             </label>
             <div
-                className="relative w-full p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary cursor-pointer flex justify-between items-center"
+                className="relative w-full p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary cursor-pointer flex justify-between items-center"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <span>
@@ -101,14 +101,14 @@ const NoCodeTestCaseInput: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col w-full h-full bg-gray-100  rounded-lg shadow-lg dark:bg-gray-800  cursor-pointer">
+        <div className="flex flex-col w-full h-full  dark:bg-gray-800  cursor-pointer">
             {/* Test Case Name */}
             <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Test Case Name:
             </label>
             <input
                 type="text"
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
+                className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Name"
             />
 
@@ -117,7 +117,7 @@ const NoCodeTestCaseInput: React.FC = () => {
                 Test Case Description:
             </label>
             <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
+                className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Description"
                 rows={4}
             />
@@ -135,7 +135,7 @@ const NoCodeTestCaseInput: React.FC = () => {
                 Test Case Steps:
             </label>
             <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
+                className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Steps"
                 rows={10}
             />
@@ -145,7 +145,7 @@ const NoCodeTestCaseInput: React.FC = () => {
                 Expected Result:
             </label>
             <textarea
-                className="p-3 text-base border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
+                className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Expected Result"
                 rows={4}
             />

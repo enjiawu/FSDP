@@ -2,7 +2,7 @@ const axios = require('axios');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const noCodeTestCase = async(req, res) =>{
-    const genAI = new GoogleGenerativeAI("AIzaSyCHEKKx8hslzY9fYCbLD4jNLd0_DdA-ooM");
+    const genAI = new GoogleGenerativeAI("AIzaSyCHEKKx8hslzY9fYCbLD4jNLd0_DdA-ooM"); // TODO:: Replace the key before final presentation
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const { testCaseName, testCaseDescription, testCaseApplication, testCaseSteps, testCaseExpectedResults } = req.body;
