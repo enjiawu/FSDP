@@ -188,6 +188,7 @@ const AllTestCasesTable = () => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Success Rate (%)</th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Date Added</th>
               <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">Reporter</th>
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -209,6 +210,9 @@ const AllTestCasesTable = () => {
                 <td className="py-4 px-4">{testCase.successRate}</td>
                 <td className="py-4 px-4">{testCase.dateAdded}</td>
                 <td className="py-4 px-4">{testCase.reporter}</td>
+                <td className="py-4 px-4">
+                  <button onClick={() => openModal(testCase)} className="text-blue-500">Edit</button>
+                </td>
               </tr>
             ))}
           </tbody>

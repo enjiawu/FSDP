@@ -63,7 +63,7 @@ const runTest = async (req, res) => {
         const failedTests = [];
 
         // Regex pattern to find passed and failed tests
-        const failedTestPattern = /TestID: (\d+),.*status: 'Failed'.*testName: '(.*)'/g;
+        const failedTestPattern = /testID: (\d+),\s*testName: '(.*)',\s*status: 'Failed'/g;
         let match;
         
         // Loop through all failed tests in the stdout
