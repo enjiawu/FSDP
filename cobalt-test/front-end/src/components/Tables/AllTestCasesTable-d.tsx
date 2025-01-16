@@ -115,6 +115,12 @@ const AllTestCasesTable = () => {
     setModalContent(testCase);
   };
 
+  const handleTestCaseTitleClick = (testCase: TestCase) => {
+    // Redirect to the source control link when a test case title is clicked
+    const filePath = `https://github.com/enjiawu/OCBC_Applications/blob/main/XYZBank/${testCase.title}`;  // Replace with your actual source control path
+    window.open(filePath, '_blank'); 
+  };
+
   return (
     <div className="rounded-md bg-white p-6 shadow-md dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4">
@@ -202,7 +208,7 @@ const AllTestCasesTable = () => {
                   />
                 </td>
                 <td className="py-4 px-4">{testCase.id}</td>
-                <td className="py-4 px-4">{testCase.title}</td>
+                <td className="py-4 px-4 cursor-pointer text-primary underline" onClick={() => handleTestCaseTitleClick(testCase)}>{testCase.title}</td>
                 <td className="py-4 px-4" onMouseEnter={(e) => showTooltip(e, testCase.description)} onMouseLeave={hideTooltip}>
                   {testCase.description}
                 </td>
