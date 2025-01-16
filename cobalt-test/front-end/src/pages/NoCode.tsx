@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import NoCodeTestCaseInput from '../components/NoCode/NoCodeTestCaseInput';
+import NoCodeTestCaseOutput from '../components/NoCode/NoCodeTestCaseOutput';
 
 const NoCode: React.FC = () => {
   const [activeStep, setActiveStep] = useState(1);
@@ -42,8 +43,8 @@ const NoCode: React.FC = () => {
       </div>
       {/* Parent Container */}
       <div className="flex flex-col w-full h-full p-6 bg-white border border-gray-300 rounded-b-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 cursor-pointer">
-        <NoCodeTestCaseInput />
-      </div>      
+        {activeStep === 1 ? <NoCodeTestCaseInput /> : <NoCodeTestCaseOutput />}
+      </div>
     </>
   );
 };
