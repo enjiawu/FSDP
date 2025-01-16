@@ -9,7 +9,7 @@ interface NoCodeTestCaseOutputProps {
 
 // Utility function to clean delimiters
 const cleanCodeSnippet = (code: string) => {
-  return code.replace(/^```javascript\s*|\s*```$/g, '');
+  return code.replace(/^```javascript\s*|\s*```$/g, '').trim();
 };
 
 const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTestCase }) => {

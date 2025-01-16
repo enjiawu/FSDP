@@ -15,7 +15,7 @@ const noCodeTestCase = async(req, res) =>{
         Test Case Steps: ${testCaseSteps}
         Expected Result: ${testCaseExpectedResults}
 
-        IMPORTANT: I ONLY WANT TO SEE THE TEST CASE CODE AND NOTHING ELSE. PLEASE DO NOT INCLUDE ANY OTHER INFORMATION IN THE RESPONSE.
+        IMPORTANT: I ONLY WANT TO SEE THE TEST CASE CODE AND NOTHING ELSE. PLEASE DO NOT INCLUDE ANY OTHER INFORMATION IN THE RESPONSE. AND REMOVE THE JAVASCRIPT BACKTICKS TOO!
 
         Also add comments for every step in the test case code to explain what is going on as this will be used to allow non-technical users to understand the test case.
     `;
