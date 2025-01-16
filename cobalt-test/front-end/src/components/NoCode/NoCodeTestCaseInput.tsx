@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface DropdownProps {
     label: string;
@@ -55,13 +56,18 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected 
     );
 };
 
-const NoCodeTestCaseInput: React.FC = () => {
+interface NoCodeTestCaseInputProps {
+    setGeneratedTestCase: (testCase: string) => void;
+}
+
+const NoCodeTestCaseInput: React.FC<NoCodeTestCaseInputProps> = ({ setGeneratedTestCase }) => {
     const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
     const [testCaseName, setTestCaseName] = useState("");
     const [testCaseDescription, setTestCaseDescription] = useState("");
     const [testCaseSteps, setTestCaseSteps] = useState("");
     const [expectedResult, setExpectedResult] = useState("");
-    const [generatedTestCase, setGeneratedTestCase] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const applicationOptions = [ // TODO:: Replace with actual data
         { value: "Dashboard-1", label: "Dashboard 1" },
@@ -69,6 +75,7 @@ const NoCodeTestCaseInput: React.FC = () => {
     ];
 
     const handleGenerateTestCase = async () => {
+        setLoading(true);
         try {
             const response = await fetch("http://localhost:3000/generatetestcase", {
                 method: 'POST',
@@ -76,32 +83,42 @@ const NoCodeTestCaseInput: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                testCaseName,
-                testCaseDescription,
-                testCaseApplication: selectedApplication,
-                testCaseSteps,
-                testCaseExpectedResults: expectedResult}),
+                    testCaseName,
+                    testCaseDescription,
+                    testCaseApplication: selectedApplication,
+                    testCaseSteps,
+                    testCaseExpectedResults: expectedResult
+                }),
             });
 
             if (!response.ok) {
                 throw new Error('Response not ok.');
             }
-        
+
             const data = await response.json();
-        
+
             if (response.status === 200) {
                 setGeneratedTestCase(data.testCase);
             } else {
                 alert(data.error);
             }
-            
+
         } catch (error) {
             console.error("Error generating test case:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="flex flex-col w-full h-full  dark:bg-gray-800  cursor-pointer">
+        <div className="flex flex-col w-full h-full dark:bg-gray-800 cursor-pointer">
+            {loading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-4 rounded-lg shadow-lg">
+                        <p className="text-lg font-medium">Generating...</p>
+                    </div>
+                </div>
+            )}
             {/* Test Case Name */}
             <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Test Case Name:
@@ -110,6 +127,8 @@ const NoCodeTestCaseInput: React.FC = () => {
                 type="text"
                 className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Name"
+                value={testCaseName}
+                onChange={(e) => setTestCaseName(e.target.value)}
             />
 
             {/* Test Case Description */}
@@ -120,6 +139,8 @@ const NoCodeTestCaseInput: React.FC = () => {
                 className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Description"
                 rows={4}
+                value={testCaseDescription}
+                onChange={(e) => setTestCaseDescription(e.target.value)}
             />
 
             {/* Application Dropdown */}
@@ -138,6 +159,8 @@ const NoCodeTestCaseInput: React.FC = () => {
                 className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Test Case Steps"
                 rows={10}
+                value={testCaseSteps}
+                onChange={(e) => setTestCaseSteps(e.target.value)}
             />
 
             {/* Expected Result */}
@@ -148,22 +171,17 @@ const NoCodeTestCaseInput: React.FC = () => {
                 className="p-3 text-base border border-stroke bg-gray py-3 px-4.5 text-black dark:border-strokedark dark:bg-meta-4 rounded-lg dark:text-gray-200 focus:outline-none focus:ring focus:ring-primary"
                 placeholder="Enter Expected Result"
                 rows={4}
+                value={expectedResult}
+                onChange={(e) => setExpectedResult(e.target.value)}
             />
 
             <button
                 onClick={handleGenerateTestCase}
                 className="w-full py-2 mt-8 bg-primary hover:bg-secondary text-white font-bold rounded-md disabled:bg-gray-300"
+                disabled={loading}
             >
                 Generate Test Case
             </button>
-
-                {/* Display generated test case */}
-                {generatedTestCase && (
-                    <div className="mt-6 p-4 bg-gray-200 rounded-lg dark:bg-gray-700">
-                        <h3 className="text-lg font-medium">Generated Test Case</h3>
-                        <pre>{generatedTestCase}</pre>
-                    </div>
-                )}
         </div>
     );
 };
