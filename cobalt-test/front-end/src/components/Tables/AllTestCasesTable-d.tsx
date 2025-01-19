@@ -115,6 +115,12 @@ const AllTestCasesTable = () => {
     setModalContent(testCase);
   };
 
+  const handleTestCaseTitleClick = (testCase: TestCase) => {
+    // Redirect to the source control link when a test case title is clicked
+    const filePath = `https://github.com/enjiawu/OCBC_Applications/blob/main/XYZBank/${testCase.title}`;  // Replace with your actual source control path
+    window.open(filePath, '_blank'); 
+  };
+
   return (
     <div className="rounded-md bg-white p-6 shadow-md dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4">
@@ -188,6 +194,7 @@ const AllTestCasesTable = () => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Success Rate (%)</th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Date Added</th>
               <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">Reporter</th>
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -201,7 +208,7 @@ const AllTestCasesTable = () => {
                   />
                 </td>
                 <td className="py-4 px-4">{testCase.id}</td>
-                <td className="py-4 px-4">{testCase.title}</td>
+                <td className="py-4 px-4 cursor-pointer text-primary underline" onClick={() => handleTestCaseTitleClick(testCase)}>{testCase.title}</td>
                 <td className="py-4 px-4" onMouseEnter={(e) => showTooltip(e, testCase.description)} onMouseLeave={hideTooltip}>
                   {testCase.description}
                 </td>
@@ -209,6 +216,9 @@ const AllTestCasesTable = () => {
                 <td className="py-4 px-4">{testCase.successRate}</td>
                 <td className="py-4 px-4">{testCase.dateAdded}</td>
                 <td className="py-4 px-4">{testCase.reporter}</td>
+                <td className="py-4 px-4">
+                  <button onClick={() => openModal(testCase)} className="text-blue-500">Edit</button>
+                </td>
               </tr>
             ))}
           </tbody>

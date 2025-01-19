@@ -6,6 +6,8 @@ const getTestCaseStatusByBrowser = require('./statusByBrowserController');
 const getTestCases = require('./testCasesControllerv2');
 const getAllTestCases = require('./alltestCasesController')
 const testCaseUpdate = require('./testCaseUpdateController');
+const noCodeTestCase = require('./noCodeTestCase');
+const noCodeTestCaseImprovement = require('./noCodeTestCaseImprovement');
 const cors = require('cors');
 
 const app = express();
@@ -20,6 +22,8 @@ app.get('/alltestcases', getAllTestCases);
 app.post('/signin', signIn);
 app.post('/run-test', runTest);
 app.post('/run-selected-test', runSelectedTest);
+app.post('/generatetestcase', noCodeTestCase);
+app.post("/improvetestcase", noCodeTestCaseImprovement);
 
 testCaseUpdate();
 
