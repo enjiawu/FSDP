@@ -5,7 +5,7 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Dashboards from './pages/Dashboards/Dashboards';
-import Dashboard from './pages/Dashboards/Dashboard';
+import Dashboard from './pages/Dashboards/Dashboard-d';
 import DashboardTestCases from './pages/Dashboards/DashboardTestCases';
 import DashboardHistory from './pages/Dashboards/DashboardHistory';
 import Settings from './pages/Settings';
