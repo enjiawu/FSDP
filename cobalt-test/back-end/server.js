@@ -8,6 +8,9 @@ const getAllTestCases = require('./alltestCasesController')
 const testCaseUpdate = require('./testCaseUpdateController');
 const noCodeTestCase = require('./noCodeTestCase');
 const noCodeTestCaseImprovement = require('./noCodeTestCaseImprovement');
+const isApplicationOwner = require('./middleware/isApplicationOwner');
+const applicationController = require('./applicationController');
+
 const cors = require('cors');
 
 const app = express();
@@ -19,11 +22,14 @@ app.get('/testcasestatus', getTestCaseStatus);
 app.get('/statusbybrowser', getTestCaseStatusByBrowser);
 app.get('/testcases', getTestCases);
 app.get('/alltestcases', getAllTestCases);
+app.get('/assigned/:applicationName', applicationController.getUsersAssignedToApplication);
 app.post('/signin', signIn);
 app.post('/run-test', runTest);
 app.post('/run-selected-test', runSelectedTest);
 app.post('/generatetestcase', noCodeTestCase);
 app.post("/improvetestcase", noCodeTestCaseImprovement);
+app.post('/assign-user', isApplicationOwner, applicationController.assignUserToApplication);
+app.post('/delete-user', isApplicationOwner, applicationController.deleteUserFromApplication);
 
 testCaseUpdate();
 
