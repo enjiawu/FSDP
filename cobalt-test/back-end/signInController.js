@@ -35,8 +35,9 @@ const signIn = async (req, res) => {
 
     }
     // Generate a JWT token
-    const token = jwt.sign({ id: user._id }, 'jwt_secret', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username }, 'jwt_secret', { expiresIn: '1h' });
     return res.status(200).json({ message: 'Login successful', token });
+
 
   } catch (error) {
     console.error(error);
