@@ -15,7 +15,7 @@ const dummyApplications = [
   },
   { 
     id: 2, 
-    title: 'Dashboard1', 
+    title: 'Dashboard 1', 
     imageSrc: './dashboard.png', 
     description: 'Keep track and manage your applications in real-time.', 
     category: 'Analytics',

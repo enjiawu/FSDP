@@ -46,7 +46,10 @@ const getTestCases = async (req, res) => {
             description: testCase.Description,
             timeTaken: testCase.TimeTaken,
             status: testCase.status || statusMap[testCase.testID] || 'Unknown', // Default to 'Unknown' if no status found
-            errorMessage: errLogMap[testCase.testID]
+            errorMessage: errLogMap[testCase.testID],
+            purpose: testCase.Purpose,
+            expectedOutcome: testCase.ExpectedOutcome,
+            steps: testCase.Steps
         }));
 
         // Send the mapped test cases as the response
