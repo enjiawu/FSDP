@@ -18,6 +18,7 @@ interface TestCaseFormData {
     purpose: string;
     expectedOutcome: string;
     steps: string[];
+    reporter: string;
 }
 
 const AddTestCase: React.FC = () => {
@@ -30,6 +31,7 @@ const AddTestCase: React.FC = () => {
         purpose: '',
         expectedOutcome: '',
         steps: [''],
+        reporter: '', 
     });
 
     const [file, setFile] = useState<File | null>(null);
@@ -100,10 +102,27 @@ const AddTestCase: React.FC = () => {
             toast.error('Please fill in all required fields');
             return;
         }
-    
+
         const filePath = `${appTitle}/testcases/${testCaseData.testCaseName}.js`;
         setFileState(prev => ({ ...prev, isUploading: true }));
         const formData = new FormData();
+        const token = localStorage.getItem('token')
+        try {
+            const userResponse = await fetch('http://localhost:3000/userDetails', {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            if (userResponse.ok) {
+                const userData = await userResponse.json();
+                testCaseData.reporter = userData.username;
+                console.log('Username:', testCaseData.reporter);
+            }
+        } catch (error) {
+            console.error('Error fetching username:', error);
+        }
         
         // Add file and metadata to FormData
         formData.append('file', file as File);
@@ -111,6 +130,9 @@ const AddTestCase: React.FC = () => {
         formData.append('filePath', filePath);
         formData.append('testCaseName', testCaseData.testCaseName);
         formData.append('testCaseDescription', testCaseData.description);
+        formData.append('purpose', testCaseData.purpose[0]);
+        formData.append('expectedOutcome', testCaseData.expectedOutcome[0]);
+        formData.append('reporter', testCaseData.reporter);
         
         Object.entries(testCaseData).forEach(([key, value]) => {
             formData.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
@@ -131,16 +153,18 @@ const AddTestCase: React.FC = () => {
             const result = await response.json();
             
             if (result.success) {
-                toast.success(`Test case "${testCaseData.testCaseName}" uploaded successfully!`);
+                alert(result.message);
                 setUploadedFiles(prev => [...prev, { 
                     name: testCaseData.testCaseName, 
                     status: 'success',
                     path: filePath 
                 }]);
                 resetForm();
+            } else {
+                alert('Upload failed: ' + result.error);
             }
         } catch (error) {
-            toast.error(`Upload failed: ${error}`);
+            alert(error);
             console.error('Upload error:', error);
         } finally {
             setFileState(prev => ({ ...prev, isUploading: false }));
@@ -154,6 +178,7 @@ const AddTestCase: React.FC = () => {
             purpose: '',
             expectedOutcome: '',
             steps: [''],
+            reporter: '',
         });
         setFile(null);
         setFileState({

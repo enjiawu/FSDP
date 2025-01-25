@@ -32,13 +32,26 @@ const uploadTestCase = async (req, res) => {
         console.log('Full file path:', localFilePath);
         console.log('File content length:', fileContent.length);     
 
-        // Upload to GitHub
+        let sha;
+        try {
+            const { data } = await octokit.repos.getContent({
+                owner: 'enjiawu',
+                repo: 'OCBC_Applications',
+                path: `XYZBank/${finalTestCaseName}.js`
+            });
+            sha = data.sha;
+        } catch (error) {
+            // New file - no SHA needed
+        }
+
+        // Now upload with the SHA included
         await octokit.repos.createOrUpdateFileContents({
             owner: 'enjiawu',
             repo: 'OCBC_Applications',
             path: `XYZBank/${finalTestCaseName}.js`,
             message: `Add test case: ${finalTestCaseName}`,
-            content: Buffer.from(fileContent).toString('base64')
+            content: Buffer.from(fileContent).toString('base64'),
+            sha: sha
         });
 
         // Save to MongoDB
@@ -53,10 +66,10 @@ const uploadTestCase = async (req, res) => {
             TimeTaken: 0.0,
             SuccessRate: 100,
             DateAdded: new Date().toISOString().split('T')[0],
-            Reporter: "John Doe",
+            Reporter: Array.isArray(req.body.reporter) ? req.body.reporter[0] : req.body.reporter,
             status: "Pending",
-            ExpectedOutcome: req.body.expectedOutcome,
-            Purpose: req.body.purpose,
+            ExpectedOutcome: Array.isArray(req.body.expectedOutcome) ? req.body.expectedOutcome[0] :  req.body.expectedOutcome,
+            Purpose: Array.isArray(req.body.purpose) ? req.body.purpose[0]:  req.body.purpose,
             Steps: JSON.parse(req.body.steps),
             application: application,
         };
@@ -67,7 +80,10 @@ const uploadTestCase = async (req, res) => {
         // Clean up the temporary upload file
         fs.unlinkSync(req.file.path);
 
-        res.json({ success: true });
+        res.json({ 
+            success: true, 
+            message: `Test case ${finalTestCaseName} has been uploaded successfully!`
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
