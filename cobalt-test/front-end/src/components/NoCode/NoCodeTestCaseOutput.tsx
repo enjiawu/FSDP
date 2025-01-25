@@ -1,10 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { FaClipboard, FaEdit, FaDownload } from 'react-icons/fa';
+import { FaClipboard, FaEdit, FaDownload, FaUpload } from 'react-icons/fa';
 
 interface NoCodeTestCaseOutputProps {
   generatedTestCase: string | null;
+  testCaseDetails: {
+      testCaseName: string;
+      testCaseDescription: string;
+      testCaseApplication: string;
+      testCaseSteps: string;
+      testCaseExpectedResults: string;
+  };
 }
 
 // Utility function to clean delimiters
@@ -12,7 +19,7 @@ const cleanCodeSnippet = (code: string) => {
   return code.replace(/^```javascript\s*|\s*```$/g, '').trim();
 };
 
-const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTestCase }) => {
+const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTestCase, testCaseDetails }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(generatedTestCase ? cleanCodeSnippet(generatedTestCase) : '');
   const [improvementPrompt, setImprovementPrompt] = useState('');
@@ -98,6 +105,43 @@ const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTe
     }
   }, [generatedTestCase]);
 
+  // Add upload handler
+  const handleUpload = async () => {
+    if (!content) return;
+
+    const formData = new FormData();
+    const blob = new Blob([content], { type: 'text/javascript' });
+    
+    // Convert steps string to array before sending
+    const stepsArray = testCaseDetails.testCaseSteps.split('\n').filter(step => step.trim());
+    
+    formData.append('file', blob, `${testCaseDetails.testCaseName}.js`);
+    formData.append('testCaseName', testCaseDetails.testCaseName);
+    formData.append('testCaseDescription', testCaseDetails.testCaseDescription);
+    formData.append('purpose', 'AI Generated Test Case');
+    formData.append('expectedOutcome', testCaseDetails.testCaseExpectedResults);
+    formData.append('steps', JSON.stringify(stepsArray));
+    formData.append('reporter', 'John Doe');
+    formData.append('application', "XYZ Bank");
+
+    try {
+        const response = await fetch('http://localhost:3000/upload-testcase', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            alert('Test case uploaded successfully!');
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Upload failed');
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Failed to upload test case: ' + error);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full h-full dark:bg-gray-800 cursor-pointer">
       {loading && (
@@ -164,6 +208,12 @@ const NoCodeTestCaseOutput: React.FC<NoCodeTestCaseOutputProps> = ({ generatedTe
               >
                 <FaDownload className="mr-2" />
                 Download (.js)
+              </button>
+              <button
+                  onClick={handleUpload}
+                  className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
+              >
+                  <FaUpload className="mr-2" />Upload to CobaltTest
               </button>
             </div>
           </div>
