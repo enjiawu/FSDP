@@ -11,9 +11,12 @@ const noCodeTestCaseImprovement = require('./noCodeTestCaseImprovement');
 const isApplicationOwner = require('./middleware/isApplicationOwner');
 const applicationController = require('./applicationController');
 const getUserDetails = require('./userAccController');
+const multer = require('multer');
+const { uploadTestCase } = require('./uploadTestCase');
 const cors = require('cors');
 
 const app = express();
+const upload = multer({ dest: 'uploads/' });
 const PORT = 3000;
 
 app.use(cors());
@@ -31,6 +34,7 @@ app.post('/generatetestcase', noCodeTestCase);
 app.post("/improvetestcase", noCodeTestCaseImprovement);
 app.post('/assign-user', isApplicationOwner, applicationController.assignUserToApplication);
 app.post('/delete-user', isApplicationOwner, applicationController.deleteUserFromApplication);
+app.post('/upload-testcase', upload.single('file'), uploadTestCase);
 
 testCaseUpdate();
 
