@@ -7,11 +7,19 @@ const NoCode: React.FC = () => {
   const [activeStep, setActiveStep] = useState(1);
   const [isGenerated, setIsGenerated] = useState(false);
   const [showOtherComponent, setShowOtherComponent] = useState(false);
-  const [generatedTestCase, setGeneratedTestCase] = useState<string>("");
+  const [generatedTestCase, setGeneratedTestCase] = useState<string | null>(null);
+  const [testCaseDetails, setTestCaseDetails] = useState({
+    testCaseName: '',
+    testCaseDescription: '',
+    testCaseApplication: '',
+    testCaseSteps: '',
+    testCaseExpectedResults: ''
+  });
 
   // Callback to enable Step 2 once the test case is generated
-  const handleGenerated = (testCase: string) => {
+  const handleTestCaseGeneration  = (testCase: string, details: any) => {
     setGeneratedTestCase(testCase);
+    setTestCaseDetails(details);
     setIsGenerated(true);
     setShowOtherComponent(true); // Navigate to the other component
     setActiveStep(2); // Optionally move to Step 2 immediately upon generation
@@ -49,9 +57,12 @@ const NoCode: React.FC = () => {
       {/* Parent Container */}
       <div className="flex flex-col w-full h-full p-6 bg-white border border-gray-300 rounded-b-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 cursor-pointer">
         {activeStep === 1 || !showOtherComponent ? (
-          <NoCodeTestCaseInput setGeneratedTestCase={handleGenerated} />
+           <NoCodeTestCaseInput setGeneratedTestCase={handleTestCaseGeneration} />
         ) : (
-          <NoCodeTestCaseOutput generatedTestCase={generatedTestCase} />
+          <NoCodeTestCaseOutput 
+            generatedTestCase={generatedTestCase} 
+            testCaseDetails={testCaseDetails}
+        />
         )}
       </div>
     </>
