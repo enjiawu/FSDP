@@ -16,6 +16,7 @@ const { uploadTestCase } = require('./uploadTestCase');
 const cors = require('cors');
 const readTestScript = require('./filePath');
 const { deleteTestCase } = require('./deleteTestCase');
+const { updateTestCase } = require('./updateTestCase');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -38,7 +39,8 @@ app.post('/assign-user', isApplicationOwner, applicationController.assignUserToA
 app.post('/delete-user', isApplicationOwner, applicationController.deleteUserFromApplication);
 app.post('/upload-testcase', upload.single('file'), uploadTestCase);
 app.get('/test-script/:filename', readTestScript);
-app.delete('/delete-testcase/:filename', deleteTestCase);
+app.delete('/delete-testcase/:name/:id', deleteTestCase);
+app.post('/update-testcase', upload.single('file'), updateTestCase);
 
 testCaseUpdate();
 

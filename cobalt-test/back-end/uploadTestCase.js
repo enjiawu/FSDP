@@ -25,7 +25,7 @@ const uploadTestCase = async (req, res) => {
 
     try {
         const testCasesDir = path.join(__dirname, 'test_cases');
-        const localFilePath = path.join(testCasesDir, `${finalTestCaseName}.js`);
+        const localFilePath = path.join(testCasesDir, `${finalTestCaseName}`);
         fs.writeFileSync(localFilePath, fileContent);
         
         console.log('Directory path:', testCasesDir);
@@ -37,7 +37,7 @@ const uploadTestCase = async (req, res) => {
             const { data } = await octokit.repos.getContent({
                 owner: 'enjiawu',
                 repo: 'OCBC_Applications',
-                path: `XYZBank/${finalTestCaseName}.js`
+                path: `XYZBank/${finalTestCaseName}`
             });
             sha = data.sha;
         } catch (error) {
@@ -48,7 +48,7 @@ const uploadTestCase = async (req, res) => {
         await octokit.repos.createOrUpdateFileContents({
             owner: 'enjiawu',
             repo: 'OCBC_Applications',
-            path: `XYZBank/${finalTestCaseName}.js`,
+            path: `XYZBank/${finalTestCaseName}`,
             message: `Add test case: ${finalTestCaseName}`,
             content: Buffer.from(fileContent).toString('base64'),
             sha: sha

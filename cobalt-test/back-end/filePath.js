@@ -4,6 +4,7 @@ const path = require('path');
 
 const readTestScript = (req, res) => {    
     const filePath =  __dirname + '\\test_cases' + '\\' + req.params.filename;
+    console.log(filePath);
     try {
         const content = fs.readFileSync(filePath, 'utf8');
         res.send(content);
