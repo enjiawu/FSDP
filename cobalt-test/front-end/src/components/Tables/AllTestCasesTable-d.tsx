@@ -4,7 +4,7 @@ import DropdownSortBy from '../Dropdowns/DropdownSortBy';
 import { runSelectedTestRequest } from '../../../../back-end/runTestRequest';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { FaClipboard, FaEdit, FaSave, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 
 interface TestCase {
     id: number;
@@ -41,10 +41,10 @@ const AllTestCasesTable = () => {
       reporter: '',
   });
 
-  const handleDelete = async (testCaseId: number) => {
+  const handleDelete = async (testCaseId: number, title: string) => {
     if (window.confirm('Are you sure you want to delete this test case?')) {
         try {
-            const response = await fetch(`http://localhost:3000/delete-testcase/${testCaseId}`, {
+            const response = await fetch(`http://localhost:3000/delete-testcase/${title}/${testCaseId}`, {
                 method: 'DELETE'
             });
 
@@ -114,16 +114,18 @@ const AllTestCasesTable = () => {
     if (!editedTestCase) return;
     
     const formData = new FormData();
+    if (modalContent) {
+        formData.append('originalTestCaseName', modalContent.title); // Add original name
+    }
     formData.append('testCaseName', editedTestCase.title);
     formData.append('testCaseDescription', editedTestCase.description);
     formData.append('reporter', editedTestCase.reporter);
     formData.append('application', editedTestCase.application || '');
 
-    // Create file blob from code content
     const codeBlob = new Blob([editedTestCase.codeContent || ''], { type: 'text/javascript' });
     formData.append('file', codeBlob, `${editedTestCase.title}.js`);
 
-    const response = await fetch('http://localhost:3000/upload-testcase', {
+    const response = await fetch('http://localhost:3000/update-testcase', {
         method: 'POST',
         body: formData
     });
@@ -131,10 +133,13 @@ const AllTestCasesTable = () => {
     if (response.ok) {
         alert('Test case updated successfully!');
         setEditMode(false);
-        // Refresh test cases list
-        fetchTestCases();
+        fetchTestCases(); // Refresh the list
+    } else {
+        const errorData = await response.json();
+        alert('Failed to update test case: ' + errorData.error);
     }
   };
+
 
   const handleTestButtonClick = () => {
     const selectedTestCaseTitles = testCases
@@ -328,7 +333,7 @@ const AllTestCasesTable = () => {
                             <FaSave className="mr-2" />Save
                         </button>
                         <button 
-                            onClick={() => handleDelete(editedTestCase?.id)}
+                            onClick={() => handleDelete(editedTestCase?.id, editedTestCase?.title)}
                             className="flex items-center px-4 py-2 bg-danger text-white rounded-lg"
                         >
                             <FaTrash className="mr-2" />Delete
