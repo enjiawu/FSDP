@@ -20,30 +20,65 @@ interface ErrorMessage {
 
 const TestCaseTable = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]); // State to store test cases
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: ErrorMessage } | null>(null);
+  const [modalContent, setModalContent] = useState<{
+    title: string;
+    description: string;
+    status: string;
+    timeTaken: number;
+    errorMessage?: ErrorMessage;
+  } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
-  const [filter, setFilter] = useState<'All' | 'Passed' | 'Failed' | 'Pending'>('All');
+  const [tooltipPosition, setTooltipPosition] = useState<{
+    top: number;
+    left: number;
+  }>({ top: 0, left: 0 });
+  const [filter, setFilter] = useState<'All' | 'Passed' | 'Failed' | 'Pending'>(
+    'All',
+  );
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedErrorRows, setExpandedErrorRows] = useState<{ [key: number]: boolean }>({}); // Tracks which rows are expanded
+  const [expandedErrorRows, setExpandedErrorRows] = useState<{
+    [key: number]: boolean;
+  }>({}); // Tracks which rows are expanded
 
   // Simulating a fetch call to get test cases from an API or database
   useEffect(() => {
     const fetchTestCases = async () => {
       const response = await fetch('http://localhost:3000/testcases');
       const data: TestCase[] = await response.json();
-      console.log("Fetched test cases:", data); // Log the fetched data
+      console.log('Fetched test cases:', data); // Log the fetched data
       setTestCases(data);
-      
     };
 
     fetchTestCases();
+
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    socket.onmessage = (event) => {
+      const data: TestCase[] = JSON.parse(event.data).testCases;
+      if (data !== undefined) {
+        console.log('Fetched test cases:', data); // Log the fetched data
+        setTestCases(data);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket Error: ', error);
+    };
+
+    return () => {
+      socket.close();
+    };
   }, []); // Empty dependency array ensures it runs only once on mount
 
-  const filteredTestCases = testCases.filter(testCase =>
-    (filter === 'All' || testCase.status === filter) &&
-    testCase.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTestCases = testCases.filter(
+    (testCase) =>
+      (filter === 'All' || testCase.status === filter) &&
+      testCase.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleDescriptionClick = (testCase: TestCase) => {
@@ -52,7 +87,7 @@ const TestCaseTable = () => {
       description: testCase.description,
       status: testCase.status,
       timeTaken: testCase.timeTaken,
-      errorMessage: testCase.errorMessage as ErrorMessage
+      errorMessage: testCase.errorMessage as ErrorMessage,
     });
   };
 
@@ -60,16 +95,19 @@ const TestCaseTable = () => {
     setModalContent(null);
   };
 
-  const showTooltip = (event: React.MouseEvent<HTMLElement>, content: string) => {
+  const showTooltip = (
+    event: React.MouseEvent<HTMLElement>,
+    content: string,
+  ) => {
     const target = event.currentTarget;
     const rect = target.getBoundingClientRect();
-    
+
     setTooltipContent(content);
     setTooltipVisible(true);
-    
+
     // Position the tooltip right above the text and centered horizontally
     setTooltipPosition({
-      top: rect.top + window.scrollY - 20, 
+      top: rect.top + window.scrollY - 20,
       left: rect.left + window.scrollX + rect.width / 2 - 400, // Adjusted to center the tooltip
     });
   };
@@ -88,12 +126,19 @@ const TestCaseTable = () => {
   return (
     <div className="rounded-md bg-white p-6 shadow-md dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4">
-        <div 
-          className="relative" 
-          onMouseEnter={(e) => showTooltip(e, "Test cases are sorted by the sequence of execution, from first to last.")}
+        <div
+          className="relative"
+          onMouseEnter={(e) =>
+            showTooltip(
+              e,
+              'Test cases are sorted by the sequence of execution, from first to last.',
+            )
+          }
           onMouseLeave={hideTooltip}
         >
-          <h2 className="text-xl font-semibold dark:text-white">Test Case Status</h2>
+          <h2 className="text-xl font-semibold dark:text-white">
+            Test Case Status
+          </h2>
         </div>
         <div className="flex items-center">
           <div className="relative mr-4">
@@ -120,9 +165,11 @@ const TestCaseTable = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <DropdownSortBy 
+          <DropdownSortBy
             value={filter}
-            onChange={(value) => setFilter(value as 'Passed' | 'Failed' | 'Pending' | 'All')}
+            onChange={(value) =>
+              setFilter(value as 'Passed' | 'Failed' | 'Pending' | 'All')
+            }
             options={[
               { value: 'All', label: 'All' },
               { value: 'Passed', label: 'Passed' },
@@ -137,18 +184,30 @@ const TestCaseTable = () => {
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">ID</th>
-              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white">Test Case</th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">Description</th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Time Taken (s)</th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Status</th>
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                ID
+              </th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white">
+                Test Case
+              </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Description
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Time Taken (s)
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredTestCases.map((testCase) => (
               <tr key={testCase.id}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <h5 className="font-medium text-black dark:text-white">{testCase.id}</h5>
+                  <h5 className="font-medium text-black dark:text-white">
+                    {testCase.id}
+                  </h5>
                 </td>
                 <td
                   className="border-b border-[#eee] py-5 px-4 underline dark:border-strokedark cursor-pointer font-medium text-primary hover:underline"
@@ -168,41 +227,65 @@ const TestCaseTable = () => {
                   </div>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">{testCase.timeTaken}</p>
+                  <p className="text-black dark:text-white">
+                    {testCase.timeTaken}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${testCase.status === 'Passed' ? 'bg-success text-success' : testCase.status === 'Failed' ? 'bg-danger text-danger' : 'bg-warning text-warning'}`}
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      testCase.status === 'Passed'
+                        ? 'bg-success text-success'
+                        : testCase.status === 'Failed'
+                        ? 'bg-danger text-danger'
+                        : 'bg-warning text-warning'
+                    }`}
                   >
                     {testCase.status}
                   </p>
                 </td>
                 <td>
-                    {testCase.status === 'Failed' && (
-                      <button
-                        className="text-blue-500 underline"
-                        onClick={() => toggleErrorDropdown(testCase.id)}
-                      >
-                        {expandedErrorRows[testCase.id] ? 'Hide Error' : 'Show Error'}
-                      </button>
-                    )}
+                  {testCase.status === 'Failed' && (
+                    <button
+                      className="text-blue-500 underline"
+                      onClick={() => toggleErrorDropdown(testCase.id)}
+                    >
+                      {expandedErrorRows[testCase.id]
+                        ? 'Hide Error'
+                        : 'Show Error'}
+                    </button>
+                  )}
                 </td>
                 {expandedErrorRows[testCase.id] && testCase.errorMessage && (
                   <tr>
                     <td colSpan={6} className="bg-gray-100 dark:bg-gray-700">
                       <div className="p-4 text-red-600 dark:text-red-400">
-                        <strong>Error:</strong> {typeof testCase.errorMessage === 'object' ? (
-                        <div className='ml-4'>
-                          <div><strong>Message:</strong> {testCase.errorMessage.message}</div>
-                          <div><strong>Code:</strong> {testCase.errorMessage.code}</div><br />
-                          <div><strong>Stack:</strong></div>
-                          <div className='ml-4'>
-                            <strong>File:</strong> {testCase.errorMessage.stack.filename}<br />
-                            <strong>Line:</strong> {testCase.errorMessage.stack.lineNum}
+                        <strong>Error:</strong>{' '}
+                        {typeof testCase.errorMessage === 'object' ? (
+                          <div className="ml-4">
+                            <div>
+                              <strong>Message:</strong>{' '}
+                              {testCase.errorMessage.message}
+                            </div>
+                            <div>
+                              <strong>Code:</strong>{' '}
+                              {testCase.errorMessage.code}
+                            </div>
+                            <br />
+                            <div>
+                              <strong>Stack:</strong>
+                            </div>
+                            <div className="ml-4">
+                              <strong>File:</strong>{' '}
+                              {testCase.errorMessage.stack.filename}
+                              <br />
+                              <strong>Line:</strong>{' '}
+                              {testCase.errorMessage.stack.lineNum}
+                            </div>
                           </div>
-                          
-                        </div>
-                        ) : testCase.errorMessage }
+                        ) : (
+                          testCase.errorMessage
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -225,25 +308,58 @@ const TestCaseTable = () => {
 
       {/* Modal for test case details */}
       {modalContent && (
-        <div className="fixed inset-0 flex items-center justify-center" onClick={closeModal}>
-          <div className="bg-white p-4 rounded shadow-lg maw-w-full max-h-full overflow-auto" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '500px', maxWidth: '500px', overflowY: 'auto' }}>
+        <div
+          className="fixed inset-0 flex items-center justify-center"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-4 rounded shadow-lg maw-w-full max-h-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxHeight: '500px', maxWidth: '500px', overflowY: 'auto' }}
+          >
             <h5 className="font-medium">{modalContent.title}</h5>
             <p>{modalContent.description}</p>
-            <p><strong>Status:</strong> {modalContent.status}</p>
-            <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
-            {modalContent.errorMessage && <p><strong>Error:</strong> {typeof modalContent.errorMessage === 'object' ? 
-            <div className="ml-4">
-              <div><strong>Message:</strong> {modalContent.errorMessage.message}</div>
-              <div><strong>Code:</strong> {modalContent.errorMessage.code}</div><br />
-              <div><strong>Stack:</strong></div>
-              <div className="ml-4">
-                <strong>File:</strong> {modalContent.errorMessage.stack.filename}<br />
-                <strong>Line:</strong> {modalContent.errorMessage.stack.lineNum}
-              </div>
-            </div>
-            
-            : modalContent.errorMessage}</p>}
-            <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded" onClick={closeModal}>Close</button>
+            <p>
+              <strong>Status:</strong> {modalContent.status}
+            </p>
+            <p>
+              <strong>Time Taken:</strong> {modalContent.timeTaken} seconds
+            </p>
+            {modalContent.errorMessage && (
+              <p>
+                <strong>Error:</strong>{' '}
+                {typeof modalContent.errorMessage === 'object' ? (
+                  <div className="ml-4">
+                    <div>
+                      <strong>Message:</strong>{' '}
+                      {modalContent.errorMessage.message}
+                    </div>
+                    <div>
+                      <strong>Code:</strong> {modalContent.errorMessage.code}
+                    </div>
+                    <br />
+                    <div>
+                      <strong>Stack:</strong>
+                    </div>
+                    <div className="ml-4">
+                      <strong>File:</strong>{' '}
+                      {modalContent.errorMessage.stack.filename}
+                      <br />
+                      <strong>Line:</strong>{' '}
+                      {modalContent.errorMessage.stack.lineNum}
+                    </div>
+                  </div>
+                ) : (
+                  modalContent.errorMessage
+                )}
+              </p>
+            )}
+            <button
+              className="mt-2 py-2 px-4 bg-blue-500 text-white rounded"
+              onClick={closeModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

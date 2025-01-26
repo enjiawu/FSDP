@@ -81,13 +81,47 @@ const OverallTestCaseStatus: React.FC = () => {
           labels: data.map((status: { name: string }) => status.name),
           colors: data.map((status: { color: string }) => status.color),
         }));
-        setSeries(data.map((status: { value: string }) => parseFloat(status.value)));
+        setSeries(
+          data.map((status: { value: string }) => parseFloat(status.value)),
+        );
+        // console.log('I AM HERE');
       } catch (error) {
         console.error('Error fetching test case status data:', error);
       }
     };
 
     fetchTestCaseStatusData();
+
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+      socket.send('test');
+      // console.log('TEST');
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data).overall;
+      if (data !== undefined) {
+        // Update chart labels and series
+        setChartOptions((prevOptions) => ({
+          ...prevOptions,
+          labels: data.map((status: { name: string }) => status.name),
+          colors: data.map((status: { color: string }) => status.color),
+        }));
+        setSeries(
+          data.map((status: { value: string }) => parseFloat(status.value)),
+        );
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket Error: ', error);
+    };
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   return (
@@ -101,7 +135,10 @@ const OverallTestCaseStatus: React.FC = () => {
       </div>
 
       {/* Chart at the top, centered */}
-      <div id="overallTestCaseStatusChart" className="mx-auto mb-4 flex justify-center">
+      <div
+        id="overallTestCaseStatusChart"
+        className="mx-auto mb-4 flex justify-center"
+      >
         <ReactApexChart options={chartOptions} series={series} type="pie" />
       </div>
 
