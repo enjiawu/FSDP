@@ -13,6 +13,7 @@ const testCaseUpdate = () => {
         // Define collections in each database
         const testResultsCollection = testResultsDB.collection('testResults');
         const testCaseCollection = testCasesDB.collection('testCasesXYZ');
+        const pendingTestsCollection = testResultsDB.collection('pendingTests'); // Collection for pending tests
 
         // Create a Change Stream on the testResults collection
         const changeStream = testResultsCollection.watch();
@@ -28,6 +29,14 @@ const testCaseUpdate = () => {
 
             // Calculate the time difference (in seconds) between startTime and endTime
             const timeTaken = (new Date(endTime) - new Date(startTime)) / 1000;
+
+            const deleteResult = await pendingTestsCollection.deleteOne({ testID: testID });
+
+            if (deleteResult.deletedCount > 0) {
+                console.log(`Pending test with testID "${testID}" removed from the pendingTests collection.`);
+            } else {
+                console.log(`No pending test with testID "${testID}" found in the pendingTests collection.`);
+            }
 
             // Find the corresponding test case based on the test name
             const testCase = await testCaseCollection.findOne({ testID: testID});
