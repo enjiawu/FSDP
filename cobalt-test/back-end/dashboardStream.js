@@ -113,6 +113,27 @@ const getDashboard = async (req, res, wss) => {
             });
         });
 
+        const pendingCollection = database.collection("pendingTests");
+        const pendingStream = pendingCollection.watch();
+
+        pendingStream.on("change", async (next) => {
+            const remaining = await pendingCollection.countDocuments();
+
+            wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(
+                        JSON.stringify({
+                            // overall: formattedStatuses,
+                            // browser: browserStatusData,
+                            // testCases: mappedTestCases,
+                            // average: average,
+                            remaining: remaining,
+                        })
+                    );
+                }
+            });
+        });
+
         const testCasesDb = client.db("app_testcases");
 
         // Fetch test cases from the 'app_testcases' database
@@ -165,6 +186,16 @@ const getDashboard = async (req, res, wss) => {
             // Send the mapped test cases as the response
             // res.json(mappedTestCases);
 
+            const timeTaken = testCases.map((testCase) => testCase.TimeTaken);
+
+            let totalTimeTaken = 0;
+            for (const time of timeTaken) {
+                totalTimeTaken += time;
+            }
+
+            const totalTestCases = await testCasesCollection.countDocuments();
+            const average = totalTimeTaken / totalTestCases;
+
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(
@@ -172,6 +203,7 @@ const getDashboard = async (req, res, wss) => {
                             // overall: formattedStatuses,
                             // browser: browserStatusData,
                             testCases: mappedTestCases,
+                            average: average,
                         })
                     );
                 }
