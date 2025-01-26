@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import '../../css/general.css';
 import DropdownSortBy from '../Dropdowns/DropdownSortBy';
-import UploadCard from '../UploadCard';
 import { runSelectedTestRequest } from '../../../../back-end/runTestRequest';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 
 interface TestCase {
-  id: number;
-  title: string;
-  description: string;
-  timeTaken: number;
-  successRate: number;
-  dateAdded: string;
-  reporter: string;
+    id: number;
+    title: string;
+    description: string;
+    timeTaken: number;
+    successRate: number;
+    dateAdded: string;
+    reporter: string;
+    application?: string;
+    codeContent?: string;
 }
+
 
 const AllTestCasesTable = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; timeTaken: number } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -24,18 +28,69 @@ const AllTestCasesTable = () => {
   const [filter, setFilter] = useState<'id-asc' | 'id-desc' | 'title-asc' | 'title-desc' | 'successRate-asc' | 'successRate-desc' | 'dateAdded-asc' | 'dateAdded-desc' | 'reporter-asc' | 'reporter-desc'>('id-asc');
   const [selectedTestCases, setSelectedTestCases] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [modalContent, setModalContent] = useState<TestCase | null>(null);
 
-  // Fetch test cases from the backend
-  useEffect(() => {
-    const fetchTestCases = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/alltestcases'); // Adjust this endpoint to match your backend
-        const data = await response.json();
-        setTestCases(data);
-      } catch (error) {
-        console.error('Error fetching test cases:', error);
+  const [editedTestCase, setEditedTestCase] = useState<TestCase>({
+      id: 0,
+      title: '',
+      description: '',
+      timeTaken: 0,
+      successRate: 0,
+      dateAdded: new Date().toISOString().split('T')[0],
+      reporter: '',
+  });
+
+  const handleDelete = async (testCaseId: number, title: string) => {
+    if (window.confirm('Are you sure you want to delete this test case?')) {
+        try {
+            const response = await fetch(`http://localhost:3000/delete-testcase/${title}/${testCaseId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Test case deleted successfully');
+                setModalContent(null);
+                setEditMode(false);
+                fetchTestCases(); // Refresh the list
+            }
+        } catch (error) {
+            console.error('Error deleting test case:', error);
+        }
       }
     };
+
+  const openModal = async (testCase: TestCase) => {
+    try {
+        const response = await fetch(`http://localhost:3000/test-script/${testCase.title}`);
+        const codeContent = await response.text();
+        
+        setModalContent({
+            ...testCase,
+            codeContent
+        });
+        setEditedTestCase({
+            ...testCase,
+            codeContent
+        });
+    } catch (error) {
+        console.error('Error fetching test script:', error);
+    }
+};
+
+
+  // Fetch test cases from the backend
+  const fetchTestCases = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/alltestcases'); // Adjust this endpoint to match your backend
+      const data = await response.json();
+      setTestCases(data);
+    } catch (error) {
+      console.error('Error fetching test cases:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchTestCases();
   }, []);
 
@@ -54,6 +109,38 @@ const AllTestCasesTable = () => {
     setSelectedTestCases(selectAll ? [] : testCases.map(testCase => testCase.id));
   };
 
+  
+  const handleEdit = async () => {
+    if (!editedTestCase) return;
+    
+    const formData = new FormData();
+    if (modalContent) {
+        formData.append('originalTestCaseName', modalContent.title); // Add original name
+    }
+    formData.append('testCaseName', editedTestCase.title);
+    formData.append('testCaseDescription', editedTestCase.description);
+    formData.append('reporter', editedTestCase.reporter);
+    formData.append('application', editedTestCase.application || '');
+
+    const codeBlob = new Blob([editedTestCase.codeContent || ''], { type: 'text/javascript' });
+    formData.append('file', codeBlob, `${editedTestCase.title}.js`);
+
+    const response = await fetch('http://localhost:3000/update-testcase', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        alert('Test case updated successfully!');
+        setEditMode(false);
+        fetchTestCases(); // Refresh the list
+    } else {
+        const errorData = await response.json();
+        alert('Failed to update test case: ' + errorData.error);
+    }
+  };
+
+
   const handleTestButtonClick = () => {
     const selectedTestCaseTitles = testCases
       .filter((testCase) => selectedTestCases.includes(testCase.id))
@@ -64,7 +151,7 @@ const AllTestCasesTable = () => {
     // Call the API endpoint to run the selected tests
     runSelectedTestRequest(selectedTestCaseTitles);
   };
-
+  
   const sortedTestCases = filteredTestCases.sort((a, b) => {
     switch (filter) {
       case 'id-asc':
@@ -110,9 +197,11 @@ const AllTestCasesTable = () => {
     setTooltipVisible(false);
   };
 
-  // Open the modal to edit a test case
-  const openModal = (testCase: TestCase) => {
-    setModalContent(testCase);
+
+  const handleTestCaseTitleClick = (testCase: TestCase) => {
+    // Redirect to the source control link when a test case title is clicked
+    const filePath = `https://github.com/enjiawu/OCBC_Applications/blob/main/XYZBank/${testCase.title}`;  // Replace with your actual source control path
+    window.open(filePath, '_blank'); 
   };
 
   return (
@@ -188,6 +277,7 @@ const AllTestCasesTable = () => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Success Rate (%)</th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Date Added</th>
               <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">Reporter</th>
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -201,7 +291,7 @@ const AllTestCasesTable = () => {
                   />
                 </td>
                 <td className="py-4 px-4">{testCase.id}</td>
-                <td className="py-4 px-4">{testCase.title}</td>
+                <td className="py-4 px-4 cursor-pointer text-primary underline" onClick={() => handleTestCaseTitleClick(testCase)}>{testCase.title}</td>
                 <td className="py-4 px-4" onMouseEnter={(e) => showTooltip(e, testCase.description)} onMouseLeave={hideTooltip}>
                   {testCase.description}
                 </td>
@@ -209,6 +299,9 @@ const AllTestCasesTable = () => {
                 <td className="py-4 px-4">{testCase.successRate}</td>
                 <td className="py-4 px-4">{testCase.dateAdded}</td>
                 <td className="py-4 px-4">{testCase.reporter}</td>
+                <td className="py-4 px-4">
+                  <button onClick={() => openModal(testCase)} className="text-blue-500">Edit</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -221,6 +314,95 @@ const AllTestCasesTable = () => {
           style={{ top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }}
         >
           {tooltipContent}
+        </div>
+      )}
+      
+      {modalContent && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 mt-15">
+          <div className="bg-white rounded-lg w-4/5 max-h-[85vh] overflow-hidden flex flex-col dark:bg-black dark:border dark:border-white transform translate-x-[10%]">
+              <div className="sticky top-0 bg-white dark:bg-black p-6 border-b border-gray-200 z-10">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-bold">Edit Test Case</h2>
+                    <div className="flex space-x-2">
+                        <button onClick={() => setEditMode(!editMode)}
+                                className="flex items-center px-4 py-2 border border-primary text-primary rounded-lg">
+                            <FaEdit className="mr-2" />{editMode ? 'View' : 'Edit'}
+                        </button>
+                        <button onClick={handleEdit}
+                                className="flex items-center px-4 py-2 bg-primary text-white rounded-lg">
+                            <FaSave className="mr-2" />Save
+                        </button>
+                        <button 
+                            onClick={() => handleDelete(editedTestCase?.id, editedTestCase?.title)}
+                            className="flex items-center px-4 py-2 bg-danger text-white rounded-lg"
+                        >
+                            <FaTrash className="mr-2" />Delete
+                        </button>
+                        <button 
+                            onClick={() => {
+                                setModalContent(null);
+                                setEditMode(false);
+                            }}
+                            className="flex items-center px-4 py-2 bg-danger text-white rounded-lg"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 overflow-auto p-6">
+                <div className="grid grid-cols-2 gap-8 h-full">
+                        <h3 className="text-lg font-medium mb-4">Test Case Details</h3>
+                        {editMode ? (
+                            <form className="space-y-4">
+                                <input 
+                                    value={editedTestCase?.title}
+                                    onChange={e => setEditedTestCase(prev => ({...prev!, title: e.target.value}))}
+                                    className="w-full p-2 border rounded dark:bg-slate-950"
+                                    placeholder="Test Case Title"
+                                />
+                                <textarea 
+                                    value={editedTestCase?.description}
+                                    onChange={e => setEditedTestCase(prev => ({...prev!, description: e.target.value}))}
+                                    className="w-full p-2 border rounded dark:bg-slate-950"
+                                    placeholder="Description"
+                                /> 
+                            </form>
+                        ) : (
+                            <div className="space-y-4">
+                                <p><strong>Title:</strong> {modalContent.title}</p>
+                                <p><strong>Description:</strong> {modalContent.description}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="overflow-auto max-h-[calc(100vh-20rem)]">
+                      <h3 className="text-lg font-medium mb-4 sticky top-0 bg-white dark:bg-black">Test Script</h3>
+                      {editMode ? (
+                          <textarea
+                              value={editedTestCase?.codeContent}
+                              onChange={e => setEditedTestCase(prev => ({...prev!, codeContent: e.target.value}))}
+                              className="w-full min-h-[200px] p-4 bg-[#1e1e1e] text-white font-mono"
+                              style={{ height: 'auto', resize: 'vertical' }}
+                          />
+                      ) : (
+                          <SyntaxHighlighter
+                              language="javascript"
+                              style={vscDarkPlus}
+                              showLineNumbers
+                              customStyle={{
+                                  minHeight: '200px',
+                                  margin: 0,
+                                  borderRadius: '0.5rem',
+                              }}
+                          >
+                              {editedTestCase?.codeContent || ''}
+                          </SyntaxHighlighter>
+                      )}
+                  </div>
+                </div>
+            </div>
         </div>
       )}
     </div>

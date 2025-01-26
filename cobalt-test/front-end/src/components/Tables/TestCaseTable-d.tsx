@@ -7,19 +7,29 @@ interface TestCase {
   id: number;
   title: string;
   description: string;
+  purpose: string;
+  expectedOutcome: string;
+  steps: Array<string>;
   timeTaken: number; // Time taken in seconds
-  errorMessage?: string;
+  errorMessage?: ErrorMessage;
   status: 'Passed' | 'Failed' | 'Pending';
+}
+
+interface ErrorMessage {
+  message: string;
+  code: string;
+  stack: any;
 }
 
 const TestCaseTable = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]); // State to store test cases
-  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: string } | null>(null);
+  const [modalContent, setModalContent] = useState<{ title: string; description: string; status: string; timeTaken: number, errorMessage?: ErrorMessage, purpose: string, expectedOutcome: string, steps: Array<string> } | null>(null);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const [filter, setFilter] = useState<'All' | 'Passed' | 'Failed' | 'Pending'>('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedErrorRows, setExpandedErrorRows] = useState<{ [key: number]: boolean }>({}); // Tracks which rows are expanded
 
   // Simulating a fetch call to get test cases from an API or database
   useEffect(() => {
@@ -45,7 +55,10 @@ const TestCaseTable = () => {
       description: testCase.description,
       status: testCase.status,
       timeTaken: testCase.timeTaken,
-      errorMessage: testCase.errorMessage,
+      errorMessage: testCase.errorMessage as ErrorMessage,
+      purpose: testCase.purpose,
+      expectedOutcome: testCase.expectedOutcome,
+      steps: testCase.steps
     });
   };
 
@@ -69,6 +82,13 @@ const TestCaseTable = () => {
 
   const hideTooltip = () => {
     setTooltipVisible(false);
+  };
+
+  const toggleErrorDropdown = (id: number) => {
+    setExpandedErrorRows((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   return (
@@ -163,6 +183,36 @@ const TestCaseTable = () => {
                     {testCase.status}
                   </p>
                 </td>
+                <td>
+                    {testCase.status === 'Failed' && (
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => toggleErrorDropdown(testCase.id)}
+                      >
+                        {expandedErrorRows[testCase.id] ? 'Hide Error' : 'Show Error'}
+                      </button>
+                    )}
+                </td>
+                {expandedErrorRows[testCase.id] && testCase.errorMessage && (
+                  <tr>
+                    <td colSpan={6} className="bg-gray-100 dark:bg-gray-700">
+                      <div className="p-4 text-red-600 dark:text-red-400">
+                        <strong>Error:</strong> {typeof testCase.errorMessage === 'object' ? (
+                        <div className='ml-4'>
+                          <div><strong>Message:</strong> {testCase.errorMessage.message}</div>
+                          <div><strong>Code:</strong> {testCase.errorMessage.code}</div><br />
+                          <div><strong>Stack:</strong></div>
+                          <div className='ml-4'>
+                            <strong>File:</strong> {testCase.errorMessage.stack.filename}<br />
+                            <strong>Line:</strong> {testCase.errorMessage.stack.lineNum}
+                          </div>
+                          
+                        </div>
+                        ) : testCase.errorMessage }
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tr>
             ))}
           </tbody>
@@ -182,12 +232,32 @@ const TestCaseTable = () => {
       {/* Modal for test case details */}
       {modalContent && (
         <div className="fixed inset-0 flex items-center justify-center" onClick={closeModal}>
-          <div className="bg-white p-4 rounded shadow-lg" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white p-6 rounded shadow-lg w-[90%] max-w-[800px] max-h-[90%] overflow-y-auto overflow-x-hidden" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90%', maxWidth: '800px', overflowY: 'auto', overflowX: 'hidden' }}>
             <h5 className="font-medium">{modalContent.title}</h5>
             <p>{modalContent.description}</p>
+            <p><strong>Purpose:</strong> {modalContent.purpose}</p>
+            <p><strong>Expected Outcome:</strong> {modalContent.expectedOutcome}</p>
+            <p><strong>Steps:</strong> 
+            <ul>
+              {modalContent.steps.map((step, index) => (
+                <li key={index}>{step}</li>
+              ))}
+            </ul>
+            </p>
             <p><strong>Status:</strong> {modalContent.status}</p>
             <p><strong>Time Taken:</strong> {modalContent.timeTaken} seconds</p>
-            {modalContent.errorMessage && <p><strong>Error Message:</strong> {modalContent.errorMessage}</p>}
+            {modalContent.errorMessage && <p><strong>Error:</strong> {typeof modalContent.errorMessage === 'object' ? 
+            <div className="ml-4">
+              <div><strong>Message:</strong> {modalContent.errorMessage.message}</div>
+              <div><strong>Code:</strong> {modalContent.errorMessage.code}</div><br />
+              <div><strong>Stack:</strong></div>
+              <div className="ml-4">
+                <strong>File:</strong> {modalContent.errorMessage.stack.filename}<br />
+                <strong>Line:</strong> {modalContent.errorMessage.stack.lineNum}
+              </div>
+            </div>
+            
+            : modalContent.errorMessage}</p>}
             <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded" onClick={closeModal}>Close</button>
           </div>
         </div>
