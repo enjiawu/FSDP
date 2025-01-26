@@ -21,6 +21,24 @@ const Dashboard: React.FC = () => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const token = localStorage.getItem('token');
 
+  // Decode JWT manually to extract role
+  const getUserRole = () => {
+    if (token) {
+      try {
+        const tokenParts = token.split('.');  // Split JWT into header, payload, and signature
+        if (tokenParts.length !== 3) throw new Error('Invalid token');
+
+        const payload = tokenParts[1];  // The second part is the payload
+        const decodedPayload = JSON.parse(atob(payload));  // Base64 decode and parse the payload
+        return decodedPayload?.role;  // Return the role from the payload
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  };
+
   // Add user to the application
   const handleAssignUser = async () => {
     if (!newUser) {
@@ -142,10 +160,19 @@ const Dashboard: React.FC = () => {
                       {(user.role === 'admin' || user.role === 'app_owner') ? (
                         <span className="text-green-500">{user.role === 'admin' ? 'Admin' : 'App Owner'}</span>
                       ) : (
-                        <button onClick={() => handleDeleteUser(user.username)} className="bg-red-500 text-white px-2 py-1 mb-1 rounded hover:bg-red-700" >
-                          Remove User
-                        </button>
-                      )}          
+                        // Conditional rendering for the "Remove User" button
+                        getUserRole() !== 'app_user' && getUserRole () !== null ? (
+                          <button
+                            onClick={() => handleDeleteUser(user.username)}
+                            className="bg-red-500 text-white px-2 py-1 mb-1 rounded hover:bg-red-700"
+                          >
+                            Remove User
+                          </button>
+                        ) : (
+                          // Optionally, hide the button if the user is an app_user
+                          <span></span>
+                        )
+                      )}     
                     </li>
                   ))
                 ) : (
@@ -161,7 +188,9 @@ const Dashboard: React.FC = () => {
                 placeholder="Enter username to assign"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-5"
               />
-              <button onClick={handleAssignUser} className="bg-green-500 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700">Assign User</button>
+              {getUserRole() !== 'app_user' && getUserRole() !== null && (
+                <button onClick={handleAssignUser} className="bg-green-500 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700">Assign User</button>
+              )}
             </div>
             <button className="bg-red-500 text-white px-4 py-2 rounded mt-4 hover:bg-red-700" onClick={toggleModal}>
               Close
