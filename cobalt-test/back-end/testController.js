@@ -1,5 +1,9 @@
 const { exec } = require('child_process');
 const { MongoClient } = require('mongodb');
+const nodemailer = require("nodemailer");
+const jwt = require('jsonwebtoken');
+const fs = require('fs').promises;
+
 const browsers = ['chrome', 'firefox', 'edge', 'opera']
 const testFolder = '../back-end/test_cases';
 //const checkBrowserAvailability = require('./browserController');
@@ -7,6 +11,49 @@ const uri = 'mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.ne
 
 // Create MongoDB client
 const client = new MongoClient(uri);
+
+async function sendTestResultsEmail(historyEntry, username) {
+    // Create a transporter
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "cobalttestnp@gmail.com",
+            pass: "wmgf wrxi jzci qipz",
+        },
+    });
+
+    const failedTestsHTML = historyEntry.failedTests.length
+            ? `<h3>Failed Tests:</h3><ul>${historyEntry.failedTests
+                .map((test) => `<li><b>${test.testID}:</b> ${test.testName}</li>`)
+                .join("")}</ul>`
+            : "<p>No failed tests</p>";
+
+    // Email options
+    const mailOptions = {
+        from: "cobalttestnp@gmail.com",
+        to: username,
+        subject: "Test Result from CobaltTest",
+        html: `
+                <h2>Test Execution Summary</h2>
+                <p><b>Test Run ID:</b> ${historyEntry.historyId}</p>
+                <p><b>Date & Time:</b> ${historyEntry.dateTime}</p>
+                <p><b>Status:</b> ${historyEntry.status}</p>
+                <p><b>Passed:</b> ${historyEntry.passed}</p>
+                <p><b>Failed:</b> ${historyEntry.failed}</p>
+                ${failedTestsHTML}
+            `,
+        };
+        
+    // Send email
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent:", info.response);
+    } catch (error) {
+        console.error("Error sending email:", error);
+    }
+
+};
+
 
 const runTest = async (req, res) => {
     //res.json({ message: 'Test execution started' });
@@ -21,18 +68,32 @@ const runTest = async (req, res) => {
     }
     const browsersToUse = availableBrowsers.join(',');
     */
+
+    // Connect to MongoDB
+    await client.connect();
+
+    // Specify the database and collections
+    const testResultsDb = client.db('app_test_results');
+    const pendingTestsCollection = testResultsDb.collection('pendingTests');
+
+    const testFiles = await fs.readdir(testFolder);
+    const numberOfTestCases = testFiles.length;
+    console.log("Length:", testFiles.length);
+    // Generate 8 pending test cases
+    const pendingTestCases = Array.from({ length: parseInt(numberOfTestCases) }, (_, i) => ({
+        testID: i + 1,
+        testName: `Test Case ${i + 1}`,
+        status: 'Pending',
+        createdAt: new Date(),
+    }));
+
+    // Insert pending test cases into the collection
+    await pendingTestsCollection.insertMany(pendingTestCases);
+
+    console.log('Pending test cases added to the collection.');
     exec(`testcafe ${browsers} ${testFolder} -- concurrency 2`, async (error, stdout, stderr) => {
         console.log(stdout);
         
-        // Example of parsing results and counting passed/failed statuses
-        //const passCount = (stdout.match(/Passed/g) || []).length;
-        //const failCount = (stdout.match(/Failed/g) || []).length;
-
-        //const passedMatch = stdout.match(/(\d+)\s+passed/);
-        //const failedMatch = stdout.match(/(\d+)\s+failed/);
-
-        //const passCount = passedMatch ? parseInt(passedMatch[1]) : 0;
-        //const failCount = failedMatch ? parseInt(failedMatch[1]) : 0;
 
         // Initialize counts
         let passCount = 0;
@@ -99,6 +160,16 @@ const runTest = async (req, res) => {
 
         // Save the history entry to MongoDB
         await historyCollection.insertOne(historyEntry);
+
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).json({ message: 'Authorization header missing' });
+        }
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'jwt_secret');
+        const username = decoded.username;
+
+        await sendTestResultsEmail(historyEntry, username);
 
         if (error) {
             console.error(`Error executing test: ${error.message}`);

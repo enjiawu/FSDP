@@ -57,7 +57,13 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, selected 
 };
 
 interface NoCodeTestCaseInputProps {
-    setGeneratedTestCase: (testCase: string) => void;
+    setGeneratedTestCase: (testCase: string, details: {
+        testCaseName: string;
+        testCaseDescription: string;
+        testCaseApplication: string | null;
+        testCaseSteps: string;
+        testCaseExpectedResults: string;
+    }) => void;
 }
 
 const NoCodeTestCaseInput: React.FC<NoCodeTestCaseInputProps> = ({ setGeneratedTestCase }) => {
@@ -98,7 +104,13 @@ const NoCodeTestCaseInput: React.FC<NoCodeTestCaseInputProps> = ({ setGeneratedT
             const data = await response.json();
 
             if (response.status === 200) {
-                setGeneratedTestCase(data.testCase);
+                setGeneratedTestCase(data.testCase, {
+                    testCaseName,
+                    testCaseDescription,
+                    testCaseApplication: selectedApplication,
+                    testCaseSteps,
+                    testCaseExpectedResults: expectedResult
+                });
             } else {
                 alert(data.error);
             }

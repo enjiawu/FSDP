@@ -45,6 +45,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
      const data = await response.json();
 
      if (response.status === 200) {
+       localStorage.setItem('token', data.token);
        onLogin(data.token);
        localStorage.setItem('token', data.token);
      } else {
