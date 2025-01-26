@@ -2,6 +2,7 @@ const { exec } = require('child_process');
 const { MongoClient } = require('mongodb');
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
+const fs = require('fs').promises;
 
 const browsers = ['chrome', 'firefox', 'edge', 'opera']
 const testFolder = '../back-end/test_cases';
@@ -67,18 +68,32 @@ const runTest = async (req, res) => {
     }
     const browsersToUse = availableBrowsers.join(',');
     */
+
+    // Connect to MongoDB
+    await client.connect();
+
+    // Specify the database and collections
+    const testResultsDb = client.db('app_test_results');
+    const pendingTestsCollection = testResultsDb.collection('pendingTests');
+
+    const testFiles = await fs.readdir(testFolder);
+    const numberOfTestCases = testFiles.length;
+    console.log("Length:", testFiles.length);
+    // Generate 8 pending test cases
+    const pendingTestCases = Array.from({ length: parseInt(numberOfTestCases) }, (_, i) => ({
+        testID: i + 1,
+        testName: `Test Case ${i + 1}`,
+        status: 'Pending',
+        createdAt: new Date(),
+    }));
+
+    // Insert pending test cases into the collection
+    await pendingTestsCollection.insertMany(pendingTestCases);
+
+    console.log('Pending test cases added to the collection.');
     exec(`testcafe ${browsers} ${testFolder} -- concurrency 2`, async (error, stdout, stderr) => {
         console.log(stdout);
         
-        // Example of parsing results and counting passed/failed statuses
-        //const passCount = (stdout.match(/Passed/g) || []).length;
-        //const failCount = (stdout.match(/Failed/g) || []).length;
-
-        //const passedMatch = stdout.match(/(\d+)\s+passed/);
-        //const failedMatch = stdout.match(/(\d+)\s+failed/);
-
-        //const passCount = passedMatch ? parseInt(passedMatch[1]) : 0;
-        //const failCount = failedMatch ? parseInt(failedMatch[1]) : 0;
 
         // Initialize counts
         let passCount = 0;
