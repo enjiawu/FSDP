@@ -5,7 +5,7 @@ const getTestCaseStatus = require("./testCaseStatusController");
 const getTestCaseStatusByBrowser = require("./statusByBrowserController");
 const getTestCases = require("./testCasesControllerv2");
 const getAllTestCases = require("./alltestCasesController");
-// const testCaseUpdate = require('./testCaseUpdateController');
+const testCaseUpdate = require('./testCaseUpdateController');
 const getStats = require("./statsController");
 const noCodeTestCase = require("./noCodeTestCase");
 const noCodeTestCaseImprovement = require("./noCodeTestCaseImprovement");
@@ -19,6 +19,8 @@ const readTestScript = require("./filePath");
 const { deleteTestCase } = require("./deleteTestCase");
 const { updateTestCase } = require("./updateTestCase");
 const wss = require("./webSocketServer");
+const chatBot = require('./chatBot');
+const generateReport = require('./generateReport');
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -31,6 +33,7 @@ app.get("/statusbybrowser", getTestCaseStatusByBrowser);
 app.get("/testcases", getTestCases);
 app.get("/alltestcases", getAllTestCases);
 app.get("/userDetails", getUserDetails);
+app.get("/assignedApps/:username", applicationController.getAssignedApplications);
 app.get(
     "/assigned/:applicationName",
     applicationController.getUsersAssignedToApplication
@@ -42,22 +45,17 @@ app.post("/run-selected-test", runSelectedTest);
 app.post("/generatetestcase", noCodeTestCase);
 app.post("/improvetestcase", noCodeTestCaseImprovement);
 
-app.post(
-    "/assign-user",
-    isApplicationOwner,
-    applicationController.assignUserToApplication
-);
-app.post(
-    "/delete-user",
-    isApplicationOwner,
-    applicationController.deleteUserFromApplication
-);
+app.post("/assign-user", isApplicationOwner, applicationController.assignUserToApplication);
+app.post("/delete-user", isApplicationOwner, applicationController.deleteUserFromApplication);
 app.post("/upload-testcase", upload.single("file"), uploadTestCase);
 app.get("/test-script/:filename", readTestScript);
 app.delete("/delete-testcase/:name/:id", deleteTestCase);
 app.post("/update-testcase", upload.single("file"), updateTestCase);
+app.post('/chatbot', chatBot);
+app.post('/generateReport', generateReport);
 
-// testCaseUpdate();
+
+testCaseUpdate();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

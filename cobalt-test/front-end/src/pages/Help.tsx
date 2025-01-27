@@ -5,16 +5,34 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 const Help: React.FC = () => {
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
   const [faqInput, setFaqInput] = useState<string>('');
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const toggleQuestion = (question: string) => {
     setActiveQuestion(prev => (prev === question ? null : question));
   };
 
-  const handleFaqSubmit = (e: React.FormEvent) => {
+  const handleFaqSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (faqInput) {
-      alert(`Your question: "${faqInput}" has been submitted!`);
-      setFaqInput('');
+      setIsLoading(true); // Indicate loading state
+      try {
+        const response = await fetch('http://localhost:3000/chatbot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: faqInput }),
+        });
+        const data = await response.json();
+        setAiResponse(data.testCase); // Display the AI's response
+      } catch (error) {
+        console.error('Error fetching AI response:', error);
+        setAiResponse('Failed to get a response. Please try again later.');
+      } finally {
+        setIsLoading(false); // Reset loading state
+        setFaqInput(''); // Clear the input field
+      }
     }
   };
 
@@ -120,8 +138,20 @@ const Help: React.FC = () => {
               rows={4}
               placeholder="Type your question here..."
               />
-              <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg">Submit</button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white rounded-lg"
+                disabled={isLoading} // Disable button when loading
+              >
+                {isLoading ? 'Submitting...' : 'Submit'}
+              </button>
             </form>
+            {aiResponse && (
+              <div className="mt-4 p-3 border rounded-lg bg-gray-100 dark:bg-gray-800">
+                <h6 className="text-sm font-bold text-black dark:text-white">AI Response:</h6>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{aiResponse}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>  
