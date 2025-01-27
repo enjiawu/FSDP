@@ -19,6 +19,8 @@ const readTestScript = require("./filePath");
 const { deleteTestCase } = require("./deleteTestCase");
 const { updateTestCase } = require("./updateTestCase");
 const wss = require("./webSocketServer");
+const chatBot = require('./chatBot');
+const generateReport = require('./generateReport');
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -43,20 +45,15 @@ app.post("/run-selected-test", runSelectedTest);
 app.post("/generatetestcase", noCodeTestCase);
 app.post("/improvetestcase", noCodeTestCaseImprovement);
 
-app.post(
-    "/assign-user",
-    isApplicationOwner,
-    applicationController.assignUserToApplication
-);
-app.post(
-    "/delete-user",
-    isApplicationOwner,
-    applicationController.deleteUserFromApplication
-);
+app.post("/assign-user", isApplicationOwner, applicationController.assignUserToApplication);
+app.post("/delete-user", isApplicationOwner, applicationController.deleteUserFromApplication);
 app.post("/upload-testcase", upload.single("file"), uploadTestCase);
 app.get("/test-script/:filename", readTestScript);
 app.delete("/delete-testcase/:name/:id", deleteTestCase);
 app.post("/update-testcase", upload.single("file"), updateTestCase);
+app.post('/chatbot', chatBot);
+app.post('/generateReport', generateReport);
+
 
 testCaseUpdate();
 
