@@ -248,20 +248,24 @@ const Dashboard: React.FC = () => {
               </ul>
             )}
             <div>
-              <input
-                type="text"
-                value={newUser}
-                onChange={(e) => setNewUser(e.target.value)}
-                placeholder="Enter username to assign"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-5"
-              />
-              {getUserRole() !== 'app_user' && getUserRole() !== null && (
-                <button
-                onClick={handleAssignUser}
-                className="bg-green-500 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700"
-              >
-                Assign User
-              </button>
+              {getUserRole() === 'admin' || getUserRole() === 'app_owner' ? (
+                <>
+                  <input
+                    type="text"
+                    value={newUser}
+                    onChange={(e) => setNewUser(e.target.value)}
+                    placeholder="Enter username to assign"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-5"
+                  />
+                  <button
+                    onClick={handleAssignUser}
+                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2 hover:bg-green-700"
+                  >
+                    Assign User
+                  </button>
+                </>
+              ) : (
+                <span></span>
               )}
             </div>
             <button
