@@ -18,7 +18,8 @@ const chatBot = async(req, res) =>{
     Run Test Function: Execute all test cases concurrently across all four supported browsers.
     Run Selected Test Cases: Allows users to run specific test cases concurrently across browsers.
     Dashboard: Provides a dashboard for real-time monitoring and interaction.
-    Test Case Management: Allows users to manage test cases for each application, including uploading, editing, and deleting test cases.
+    Test Case Management: Allows users to manage test cases for each application, including uploading, editing, and deleting test cases. Only JavaScript test cases are supported.
+    If user wants to edit a test case, they can click on the edit icon next to the test case. User will be brought to the github page where they can edit the test case.
 
     Some examples of questions and answers are:
     What is the purpose of the dashboard?
@@ -34,7 +35,7 @@ const chatBot = async(req, res) =>{
     You can track your testing history by navigating to the "History" tab. This will show you past testing activities and results.
 
     How do I manage test cases?
-    Test cases can be managed individually or for all applications. Click the "Manage" button to edit, delete, or add new test cases.
+    Test cases can be managed individually or for all applications. Click the "Test Cases" button to edit, delete, or add new test cases.
 
     Answer the following query:
     ${query}

@@ -19,6 +19,7 @@ const { deleteTestCase } = require('./deleteTestCase');
 const { updateTestCase } = require('./updateTestCase');
 const wss = require("./webSocketServer");
 const chatBot = require('./chatBot');
+const generateReport = require('./generateReport');
 
 
 const app = express();
@@ -49,6 +50,7 @@ app.get('/test-script/:filename', readTestScript);
 app.delete('/delete-testcase/:name/:id', deleteTestCase);
 app.post('/update-testcase', upload.single('file'), updateTestCase);
 app.post('/chatbot', chatBot);
+app.post('/generateReport', generateReport);
 
 // testCaseUpdate();
 
