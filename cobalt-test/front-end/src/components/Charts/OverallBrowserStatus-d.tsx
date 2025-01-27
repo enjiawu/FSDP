@@ -25,6 +25,30 @@ const OverallTestCaseStatusByBrowserTypes = () => {
       .catch((error) => {
         console.error('Error fetching test case status:', error);
       });
+
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+      socket.send('test');
+      // console.log('TEST');
+    };
+
+    socket.onmessage = (event) => {
+      const data: BrowserData = JSON.parse(event.data).browser;
+      if (data !== undefined) {
+        console.log('Fetched data:', data); // Ensure the data structure is correct
+        setBrowserData(data); // Set the state with fetched data
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket Error: ', error);
+    };
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   if (!browserData) {
@@ -32,11 +56,14 @@ const OverallTestCaseStatusByBrowserTypes = () => {
   }
 
   // Calculate total cases per browser
-  const totalCasesPerBrowser = Object.keys(browserData).reduce((acc, browser) => {
-    const [passed, pending, failed] = browserData[browser];
-    acc[browser] = passed + pending + failed;
-    return acc;
-  }, {} as Record<string, number>);
+  const totalCasesPerBrowser = Object.keys(browserData).reduce(
+    (acc, browser) => {
+      const [passed, pending, failed] = browserData[browser];
+      acc[browser] = passed + pending + failed;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const options: ApexOptions = {
     chart: {
@@ -53,7 +80,13 @@ const OverallTestCaseStatusByBrowserTypes = () => {
     },
     tooltip: {
       y: {
-        formatter: (value: number, { seriesIndex, dataPointIndex }: { seriesIndex: number, dataPointIndex: number }) => {
+        formatter: (
+          value: number,
+          {
+            seriesIndex,
+            dataPointIndex,
+          }: { seriesIndex: number; dataPointIndex: number },
+        ) => {
           const browser = Object.keys(browserData)[dataPointIndex];
           const totalCases = totalCasesPerBrowser[browser];
           const percentage = ((value / totalCases) * 100).toFixed(2);
@@ -75,15 +108,15 @@ const OverallTestCaseStatusByBrowserTypes = () => {
   const series = [
     {
       name: 'Passed',
-      data: Object.values(browserData).map(browser => browser[0]), // First value is Passed
+      data: Object.values(browserData).map((browser) => browser[0]), // First value is Passed
     },
     {
       name: 'Pending',
-      data: Object.values(browserData).map(browser => browser[1]), // Second value is Pending
+      data: Object.values(browserData).map((browser) => browser[1]), // Second value is Pending
     },
     {
       name: 'Failed',
-      data: Object.values(browserData).map(browser => browser[2]), // Third value is Failed
+      data: Object.values(browserData).map((browser) => browser[2]), // Third value is Failed
     },
   ];
 
@@ -97,11 +130,7 @@ const OverallTestCaseStatusByBrowserTypes = () => {
 
       {/* Bar chart */}
       <div id="chartBrowserTypes" className="mx-auto">
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="bar"
-        />
+        <ReactApexChart options={options} series={series} type="bar" />
       </div>
     </div>
   );
