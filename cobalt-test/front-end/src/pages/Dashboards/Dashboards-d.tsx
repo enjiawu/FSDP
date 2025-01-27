@@ -29,6 +29,7 @@ const Dashboards: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOption, setSortOption] = useState<string>('title');
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const toggleFavorite = (appId: number) => {
     setFavorites((prevFavorites) => 
@@ -66,6 +67,13 @@ const Dashboards: React.FC = () => {
           }
     
           const username = decoded.username; // Extract the username from the decoded payload
+          setUserRole(decoded.role);
+
+          if (decoded.role === 'admin') {
+            // Admins can view all dashboards
+            setAssignedApps(dummyApplications.map((app) => app.title));
+            return;
+          }
 
           const response = await fetch(`http://localhost:3000/assignedApps/${username}`, {
             method: 'GET',
@@ -89,7 +97,9 @@ const Dashboards: React.FC = () => {
       fetchAssignedApps();
   }, []);
 
-  const filteredApplications = applications.filter((app) => assignedApps.includes(app.title));
+  const filteredApplications = userRole === 'admin' ?
+  applications :
+  applications.filter((app) => assignedApps.includes(app.title));
 
   // Filter and sort applications
   const filteprimaryApplications = filteredApplications
