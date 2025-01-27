@@ -5,7 +5,7 @@ const getTestCaseStatus = require("./testCaseStatusController");
 const getTestCaseStatusByBrowser = require("./statusByBrowserController");
 const getTestCases = require("./testCasesControllerv2");
 const getAllTestCases = require("./alltestCasesController");
-// const testCaseUpdate = require('./testCaseUpdateController');
+const testCaseUpdate = require('./testCaseUpdateController');
 const getStats = require("./statsController");
 const noCodeTestCase = require("./noCodeTestCase");
 const noCodeTestCaseImprovement = require("./noCodeTestCaseImprovement");
@@ -58,7 +58,7 @@ app.get("/test-script/:filename", readTestScript);
 app.delete("/delete-testcase/:name/:id", deleteTestCase);
 app.post("/update-testcase", upload.single("file"), updateTestCase);
 
-// testCaseUpdate();
+testCaseUpdate();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
