@@ -31,6 +31,7 @@ app.get("/statusbybrowser", getTestCaseStatusByBrowser);
 app.get("/testcases", getTestCases);
 app.get("/alltestcases", getAllTestCases);
 app.get("/userDetails", getUserDetails);
+app.get("/assignedApps/:username", applicationController.getAssignedApplications);
 app.get(
     "/assigned/:applicationName",
     applicationController.getUsersAssignedToApplication

@@ -120,8 +120,33 @@ const deleteUserFromApplication = async (req, res) => {
   }
 };
 
+const getAssignedApplications = async (req, res) => {
+  try {
+    const { username } = req.params;
+    console.log(username);
+
+
+    // Query the accountData collection for the assigned apps of the logged-in user
+    const user = await accountDB.collection('accountData').findOne({ username })
+
+    if (!user || !user.assignedApps) {
+      return res.status(404).json({ message: 'No applications found for this user.' });
+    }
+
+    // Return the assigned applications (an array of application names)
+    console.log("Assigned Apps:", user.assignedApps)
+    return res.status(200).json(user.assignedApps);
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+};
+
+
 module.exports = {
   getUsersAssignedToApplication,
   assignUserToApplication,
-  deleteUserFromApplication
+  deleteUserFromApplication,
+  getAssignedApplications
 };
