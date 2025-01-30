@@ -4,20 +4,20 @@ import { Route, Routes, useLocation, Navigate, useNavigate } from 'react-router-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import Dashboards from './pages/Dashboards/Dashboards';
+import Dashboards from './pages/Dashboards/Dashboards-d';
 import Dashboard from './pages/Dashboards/Dashboard-d';
 import DashboardTestCases from './pages/Dashboards/DashboardTestCases';
 import DashboardHistory from './pages/Dashboards/DashboardHistory';
 import Settings from './pages/Settings-d';
-import AllTestCases from './pages/AllTestCases';
-import AllHistory from './pages/AllHistory';
-import AllApplication from './pages/AllApplications';
+import AllTestCases from './pages/AllTestCases-d';
+import AllHistory from './pages/AllHistory-d';
+import AllApplication from './pages/AllApplications-d';
 import ApplicationDetailPage from './pages/ApplicationDetailPage';
 import Credits from './pages/Credits';
 import Help from './pages/Help';
 import React from 'react';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar/index';
+import Sidebar from './components/Sidebar/index-d';
 import NoCode from './pages/NoCode';
 
 // Dummy data for applications

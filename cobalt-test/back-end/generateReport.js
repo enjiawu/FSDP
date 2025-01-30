@@ -17,27 +17,27 @@ const generateReport = async (req, res) => {
     Generate a report based on the following data
     1
     customerLogin.js	
-    19.925
+    3.111
     Passed
 
     2
     customerDepositMoney.js	
-    62.573
+    12.573
     Passed
 
     3
     customerWithdrawMoney.js	
-    48.054
+    28.054
     Passed
 
     4
     customerWithdrawInsufficientFunds.js	
-    182.846
+    10.382
     Passed
 
     5
     customerCheckTransactions.js	
-    55.809
+    35.809
     Passed
 
     6

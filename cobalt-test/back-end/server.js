@@ -5,7 +5,7 @@ const getTestCaseStatus = require("./testCaseStatusController");
 const getTestCaseStatusByBrowser = require("./statusByBrowserController");
 const getTestCases = require("./testCasesControllerv2");
 const getAllTestCases = require("./alltestCasesController");
-// const testCaseUpdate = require('./testCaseUpdateController');
+const testCaseUpdate = require('./testCaseUpdateController');
 const getStats = require("./statsController");
 const noCodeTestCase = require("./noCodeTestCase");
 const noCodeTestCaseImprovement = require("./noCodeTestCaseImprovement");
@@ -33,6 +33,7 @@ app.get("/statusbybrowser", getTestCaseStatusByBrowser);
 app.get("/testcases", getTestCases);
 app.get("/alltestcases", getAllTestCases);
 app.get("/userDetails", getUserDetails);
+app.get("/assignedApps/:username", applicationController.getAssignedApplications);
 app.get(
     "/assigned/:applicationName",
     applicationController.getUsersAssignedToApplication
@@ -54,7 +55,7 @@ app.post('/chatbot', chatBot);
 app.post('/generateReport', generateReport);
 
 
-// testCaseUpdate();
+testCaseUpdate();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
