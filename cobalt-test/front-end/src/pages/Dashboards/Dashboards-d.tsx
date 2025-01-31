@@ -8,14 +8,14 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 const dummyApplications = [
   { 
     id: 1, 
-    title: 'XYZ Bank', 
+    title: 'Application 2', 
     imageSrc: './XYZ_icon.png', 
     description: 'Keep track of your spending and create budgets to save money.', 
     category: 'Finance',
   },
   { 
     id: 2, 
-    title: 'Dashboard 1', 
+    title: 'Application 1', 
     imageSrc: './dashboard.png', 
     description: 'Keep track and manage your applications in real-time.', 
     category: 'Analytics',
