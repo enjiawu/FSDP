@@ -93,8 +93,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   }, []);
 
   const dashboardRoutes = [
-    { path: '/dashboards/Dashboard 1', label: 'Dashboard 1' },
-    { path: '/dashboards/XYZ Bank', label:'XYZ Bank'}
+    { path: '/dashboards/Application 1', label: 'Application 1' },
+    { path: '/dashboards/Application 2', label:'Application 2'}
     //TODO: Change to actual dashboard routes
   ];
 
