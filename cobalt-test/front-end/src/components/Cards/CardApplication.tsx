@@ -49,7 +49,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
 
           {/* Add to Favourites button */}
           <button onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }} className="flex items-center justify-center mt-2 bg-primary text-white text-sm font-bold py-2 rounded-md hover:bg-primary-600 transition hover:bg-secondary">
-            {isFavorite ? (
+            {!isFavorite ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-1 fill-current"
@@ -71,7 +71,7 @@ const CardApplication: React.FC<CardApplicationProps> = ({
                 />
               </svg>
             )}
-            {isFavorite ? 'Remove from Favourites' : 'Add to Favourites'}
+            {!isFavorite ? 'Remove from Favourites' : 'Add to Favourites'}
           </button>
         </div>
       </div>
