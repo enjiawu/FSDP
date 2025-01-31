@@ -21,6 +21,7 @@ const Dashboard: React.FC = () => {
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [remainingTests, setRemainingTests] = useState(0);
   const [averageTime, setAverageTime] = useState(0);
+  const [isTimeUp, setIsTimeUp] = useState(false);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const token = localStorage.getItem('token');
@@ -29,12 +30,12 @@ const Dashboard: React.FC = () => {
   const getUserRole = () => {
     if (token) {
       try {
-        const tokenParts = token.split('.');  // Split JWT into header, payload, and signature
+        const tokenParts = token.split('.'); // Split JWT into header, payload, and signature
         if (tokenParts.length !== 3) throw new Error('Invalid token');
 
-        const payload = tokenParts[1];  // The second part is the payload
-        const decodedPayload = JSON.parse(atob(payload));  // Base64 decode and parse the payload
-        return decodedPayload?.role;  // Return the role from the payload
+        const payload = tokenParts[1]; // The second part is the payload
+        const decodedPayload = JSON.parse(atob(payload)); // Base64 decode and parse the payload
+        return decodedPayload?.role; // Return the role from the payload
       } catch (error) {
         console.error('Error decoding token:', error);
         return null;
@@ -141,37 +142,39 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://localhost:3000/get-stats'); // Update with your backend API URL
+        const response = await fetch('http://localhost:3000/get-stats'); // fetch statistics from DB
         const data = await response.json();
-        setEstimatedTime(
-          Number(((data.average * data.remaining) / 60).toFixed(2)),
-        );
-        setRemainingTests(data.remaining);
-        setAverageTime(Number((data.average).toFixed(2)));
+        setEstimatedTime(Math.round(data.average * data.remaining)); // estimated time remaining = average time taken for one test * remaining number of tests
+        setRemainingTests(data.remaining); // remaining number of tests
+        setAverageTime(Number(data.average.toFixed(2))); // round to 2dp
       } catch (error) {
         console.error('Error fetching statistics: ', error);
       }
     };
 
+    // fetch initial data
     fetchStats();
 
+    // connect to websocket server
     const socket = new WebSocket('ws://localhost:8080');
 
+    // when connected
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
-      socket.send('test');
-      // console.log('TEST');
     };
 
+    // when message received
     socket.onmessage = (event) => {
       const remaining = JSON.parse(event.data).remaining;
+      // get remaining time if exists in message
       if (remaining !== undefined) {
         setRemainingTests(remaining);
       }
 
+      // get average time if exists in message
       const average = JSON.parse(event.data).average;
       if (average !== undefined) {
-        setAverageTime(Number((average).toFixed(2)));
+        setAverageTime(Number(average.toFixed(2)));
       }
     };
 
@@ -179,14 +182,32 @@ const Dashboard: React.FC = () => {
       console.error('WebSocket Error: ', error);
     };
 
+    // close connection
     return () => {
       socket.close();
     };
   }, []);
 
+  // update estimated time remaining whenever average time and remaining number of tests change
   useEffect(() => {
-    setEstimatedTime(Number(((averageTime * remainingTests) / 60).toFixed(2)));
+    setEstimatedTime(Math.round(averageTime * remainingTests));
   }, [averageTime, remainingTests]);
+
+  // timer to count down the estimated time remaining
+  useEffect(() => {
+    if (estimatedTime > 0) {
+      const timer = setInterval(() => {
+        setEstimatedTime((prevEstimatedTime) => prevEstimatedTime - 1); // decrease number of seconds
+        setIsTimeUp(false);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else if (remainingTests > 0) {
+      setIsTimeUp(true); // ran out of time but tests still running
+    } else {
+      setIsTimeUp(false); // no more time because no tests are running
+    }
+  }, [estimatedTime]);
 
   return (
     <>
@@ -226,20 +247,18 @@ const Dashboard: React.FC = () => {
                         <span className="text-green-500">
                           {user.role === 'admin' ? 'Admin' : 'App Owner'}
                         </span>
+                      ) : // Conditional rendering for the "Remove User" button
+                      getUserRole() !== 'app_user' && getUserRole() !== null ? (
+                        <button
+                          onClick={() => handleDeleteUser(user.username)}
+                          className="bg-red-500 text-white px-2 py-1 mb-1 rounded hover:bg-red-700"
+                        >
+                          Remove User
+                        </button>
                       ) : (
-                        // Conditional rendering for the "Remove User" button
-                        getUserRole() !== 'app_user' && getUserRole () !== null ? (
-                          <button
-                            onClick={() => handleDeleteUser(user.username)}
-                            className="bg-red-500 text-white px-2 py-1 mb-1 rounded hover:bg-red-700"
-                          >
-                            Remove User
-                          </button>
-                        ) : (
-                          // Optionally, hide the button if the user is an app_user
-                          <span></span>
-                        )
-                      )}     
+                        // Optionally, hide the button if the user is an app_user
+                        <span></span>
+                      )}
                     </li>
                   ))
                 ) : (
@@ -335,8 +354,14 @@ const Dashboard: React.FC = () => {
         <div className="col-span-1 md:col-span-1 flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-4">
             <CardDataStats
-              title="Estimated time until completion (in min)"
-              total={estimatedTime}
+              title="Estimated time until completion"
+              total={
+                isTimeUp
+                  ? 'Still running...'
+                  : `${Math.floor(estimatedTime / 60)} min(s) ${
+                      estimatedTime % 60
+                    } sec(s)`
+              } // format seconds to min(s) and sec(s), display message when estimatedTime runs out
             >
               <svg
                 className="fill-primary dark:fill-white"
@@ -351,7 +376,7 @@ const Dashboard: React.FC = () => {
 
             <CardDataStats
               title="Number of Test Cases Remaining"
-              total={remainingTests}
+              total={String(remainingTests)}
             >
               <svg
                 className="fill-primary dark:fill-white"
@@ -365,7 +390,7 @@ const Dashboard: React.FC = () => {
             </CardDataStats>
             <CardDataStats
               title="Average time taken per test case (in secs)"
-              total={averageTime}
+              total={String(averageTime)}
             >
               <svg
                 className="fill-primary dark:fill-white"

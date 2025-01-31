@@ -16,6 +16,7 @@ const OverallTestCaseStatusByBrowserTypes = () => {
   const [browserData, setBrowserData] = useState<BrowserData | null>(null);
 
   useEffect(() => {
+    // fetch initial data from DB
     fetch('http://localhost:3000/statusbybrowser')
       .then((response) => response.json())
       .then((data: BrowserData) => {
@@ -26,16 +27,18 @@ const OverallTestCaseStatusByBrowserTypes = () => {
         console.error('Error fetching test case status:', error);
       });
 
+    // connect to websocket server
     const socket = new WebSocket('ws://localhost:8080');
 
+    // when connected
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
-      socket.send('test');
-      // console.log('TEST');
     };
 
+    // when message received
     socket.onmessage = (event) => {
       const data: BrowserData = JSON.parse(event.data).browser;
+      // if browser data exists in the message
       if (data !== undefined) {
         console.log('Fetched data:', data); // Ensure the data structure is correct
         setBrowserData(data); // Set the state with fetched data
@@ -46,6 +49,7 @@ const OverallTestCaseStatusByBrowserTypes = () => {
       console.error('WebSocket Error: ', error);
     };
 
+    // close connection
     return () => {
       socket.close();
     };
