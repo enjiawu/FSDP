@@ -68,11 +68,11 @@ const OverallTestCaseStatus: React.FC = () => {
   const [chartOptions, setChartOptions] = useState<ApexOptions>(initialOptions);
   const [series, setSeries] = useState<number[]>([]);
 
-  // Fetch data from the backend API
+
   useEffect(() => {
     const fetchTestCaseStatusData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/testcasestatus'); // Update with your backend API URL
+        const response = await fetch('http://localhost:3000/testcasestatus'); 
         const data = await response.json();
 
         // Update chart labels and series
@@ -84,24 +84,26 @@ const OverallTestCaseStatus: React.FC = () => {
         setSeries(
           data.map((status: { value: string }) => parseFloat(status.value)),
         );
-        // console.log('I AM HERE');
+
       } catch (error) {
         console.error('Error fetching test case status data:', error);
       }
     };
 
-    fetchTestCaseStatusData();
+    fetchTestCaseStatusData();  // fetch initial data from DB
 
+    // connect to websocket server
     const socket = new WebSocket('ws://localhost:8080');
 
+    // when connected
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
-      socket.send('test');
-      // console.log('TEST');
     };
 
+    // when message received
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data).overall;
+      // if test case status data exists in message
       if (data !== undefined) {
         // Update chart labels and series
         setChartOptions((prevOptions) => ({
@@ -119,6 +121,7 @@ const OverallTestCaseStatus: React.FC = () => {
       console.error('WebSocket Error: ', error);
     };
 
+    // close connection
     return () => {
       socket.close();
     };
