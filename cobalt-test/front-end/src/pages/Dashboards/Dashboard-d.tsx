@@ -147,7 +147,7 @@ const Dashboard: React.FC = () => {
           Number(((data.average * data.remaining) / 60).toFixed(2)),
         );
         setRemainingTests(data.remaining);
-        setAverageTime(Number((data.average / 60).toFixed(2)));
+        setAverageTime(Number((data.average).toFixed(2)));
       } catch (error) {
         console.error('Error fetching statistics: ', error);
       }
@@ -171,7 +171,7 @@ const Dashboard: React.FC = () => {
 
       const average = JSON.parse(event.data).average;
       if (average !== undefined) {
-        setAverageTime(Number((average / 60).toFixed(2)));
+        setAverageTime(Number((average).toFixed(2)));
       }
     };
 
