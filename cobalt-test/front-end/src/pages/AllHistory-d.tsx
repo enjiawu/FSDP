@@ -42,7 +42,7 @@ const AllHistory: React.FC = () => {
     }, []);
 
     // Show loading state if userRole or assignedApps are still being fetched
-    if (userRole === null || assignedApps.length === 0) {
+    if (userRole === null || (userRole === null && assignedApps.length === 0)) {
         return <div className="text-center mt-10 text-lg font-semibold">You are currently accessing this platform as a restricted user. If you are assigned to any application that you are managing, please contact OCBC Helpdesk for further assistance.</div>;
     }
   return (
