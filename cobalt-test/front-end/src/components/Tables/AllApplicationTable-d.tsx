@@ -25,43 +25,40 @@ const allApplicationTable: AllApplicationResult[] = [
 
 
 const AllApplicationTable: React.FC = () => {
+    const [assignedApps, setAssignedApps] = useState<string[]>([]);
+    const [userRole, setUserRole] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchAssignedApps = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+            const decodedToken = token
+            ? JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+            : null;
+            const username = decodedToken?.username;
+            const role = decodedToken?.role;
+            setUserRole(role);
 
-    // State to store assigned applications
-const [assignedApps, setAssignedApps] = useState<string[]>([]);
-const [userRole, setUserRole] = useState<string | null>(null);
+            const response = await fetch(`http://localhost:3000/assignedApps/${username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            });
 
-useEffect(() => {
-    const fetchAssignedApps = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-        const decodedToken = token
-          ? JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
-          : null;
-        const username = decodedToken?.username;
-        const role = decodedToken?.role;
-        setUserRole(role);
+            if (!response.ok) {
+            throw new Error(`Error fetching assigned apps: ${response.statusText}`);
+            }
 
-        const response = await fetch(`http://localhost:3000/assignedApps/${username}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error fetching assigned apps: ${response.statusText}`);
+            const data = await response.json(); // Assuming the response is an array of application names
+            setAssignedApps(data);
+        } catch (error) {
+            console.error('Error fetching assigned apps:', error);
         }
+        };
 
-        const data = await response.json(); // Assuming the response is an array of application names
-        setAssignedApps(data);
-      } catch (error) {
-        console.error('Error fetching assigned apps:', error);
-      }
-    };
-
-    fetchAssignedApps();
-  }, []);
+        fetchAssignedApps();
+    }, []);
 
    // Filter applications based on assigned apps
    const filteredApplications = userRole === 'admin' 
