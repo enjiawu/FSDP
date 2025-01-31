@@ -10,19 +10,21 @@
 
 ## The Team
 
-| **Team Member**        | **Role**                 |
-|------------------------|--------------------------|
-| **Wu Enjia**            | Project Lead / Front-End Developer  |
-| **Jayme Chua**          | Project Manager / Automation Engineer |
-| **Timothy Chai**        | Automation Engineer |
-| **Joseph Wan**          | Back-End Developer |
-| **Shin Thant Aung**     | Back-End Developer  |
+| **Team Member**        | **Role**                              | **Additional Features**    |
+|------------------------|---------------------------------------|----------------------------|
+| **Wu Enjia**           | Project Lead / Front-End Developer    | No-code test case creation |   
+| **Jayme Chua**         | Project Manager / Automation Engineer | AI-powered Chatbot         |
+| **Timothy Chai**       | Automation Engineer                   | Real-time dashboard updates|
+| **Joseph Wan**         | Back-End Developer                    | Enhanced security layer    |
+| **Shin Thant Aung**    | Back-End Developer                    | Real-time notifications    |
 
 ## About CobaltTest
 
 CobaltTest is a full-stack application designed to streamline cross-browser regression testing. It supports the automation of up to 500 Selenium test cases, ensuring reliable performance across browsers such as Chrome, Firefox, and Edge. CobaltTest is tailored for testing critical applications, including consumer internet banking and internal HR systems.
 
-### Key Features
+---
+
+## Stage 1 Features
 
 1. **Application-Specific Dashboard**:
    - **Main Dashboard**: Displays real-time metrics and test results for individual applications.
@@ -34,15 +36,29 @@ CobaltTest is a full-stack application designed to streamline cross-browser regr
    - **All Applications Page**: Track and manage test results across multiple applications.
    - **All History Page**: Insights into pass/fail rates, execution frequency, and historical performance trends.
 
-### Future Enhancements
+---
+
+## Stage 2 Features
+
+### Improvement
+- Completed Stage 1 Dashboard (fully functioning with actual data).
+- Added error logging (images, code, etc.).
+- Implemented a quick view of test cases, including descriptions, expected outputs, and steps taken.
+- Set up source control to track edits to test cases and created a public repository to manage test cases.
+
+### New Features
+- **No-Code Test Case Creation**: Enabled test case creation without writing code, simplifying the process for non-technical users.
+- **Real-Time Notifications**: Implemented instant notifications (email/SMS) for test completions and failures.
+- **Real-Time Dashboard Updates**: Enhanced the dashboard to provide real-time updates on test statuses.
+- **AI-Powered Optimization**: Integrated AI to predict potential bug areas and dynamically schedule tests for optimal performance.
+- **Enhanced Security Layer**: Added a 3-tier account management system (Admins, Application Owners, Users) for role-based permissions and secure data access.
+
+---
+
+## Future Enhancements
 
 | **Enhancement**                | **Description**                                                                                      |
 |---------------------------------|------------------------------------------------------------------------------------------------------|
-| **No-Code Test Case Creation**  | AI-driven script generation from simple text prompts, compatible with tools like TestCafe for complex scenarios. |
-| **AI-Powered Optimization**     | AI predicts potential bug areas based on past failures, correlates with code changes, and dynamically schedules tests to optimize performance. |
-| **Real-Time Notifications**     | Instant updates via email/SMS on test completions and failures, with customizable preferences.        |
-| **Enhanced Security Layer**     | 3-tier account management system (Admins, Application Owners, Users) for role-based permissions and secure data access. |
-| **Real-Time Dashboard Updates** | Automatic dashboard updates with instant test status, improving workflow efficiency.                 |
 | **Jira & GitHub Integration**   | Test failures logged as tasks in Jira and GitHub with error details, syncing with OCBC's cloud for centralized access and data consistency. |
 
 ## Built With
