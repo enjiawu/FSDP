@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AllApplicationTable from '../components/Tables/AllApplicationTable';
+import AllApplicationTable from '../components/Tables/AllApplicationTable-d';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 
 
