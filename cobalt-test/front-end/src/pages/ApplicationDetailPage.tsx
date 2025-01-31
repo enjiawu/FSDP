@@ -13,13 +13,13 @@ interface AllApplicationResult {
 const allApplicationTable: AllApplicationResult[] = [
   {
     id: 1,
-    title: 'Nura Bank',
+    title: 'Application 1',
     totalTestCases: 8,
     successRate: 98,
   },
   {
     id: 2,
-    title: 'XYZ Bank',
+    title: 'Application 2',
     totalTestCases: 14,
     successRate: 90,
   },

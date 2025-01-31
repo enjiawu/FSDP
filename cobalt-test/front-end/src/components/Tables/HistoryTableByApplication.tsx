@@ -77,7 +77,7 @@ const applicationResults: ApplicationResult[] = [
 ];
 
 const HistoryTableByApplication = () => {
-  const applicationTitle = "XYZ Bank";
+  const applicationTitle = "application-2";
   const [openDropdown, setOpenDropdown] = React.useState<number | null>(null);
   const [filter, setFilter] = useState<
   'id-asc' | 'id-desc' | 'dateTime-asc' | 'dateTime-desc' | 'status-passed' | 'status-failed' | 'passed-asc' | 'passed-desc'
