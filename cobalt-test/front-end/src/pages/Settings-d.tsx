@@ -58,6 +58,7 @@ const Settings = () => {
     localStorage.removeItem('token'); // Remove token
     console.log('User logged out');
     // Redirect user to login page if needed
+    window.location.reload();
   };
 
   return (

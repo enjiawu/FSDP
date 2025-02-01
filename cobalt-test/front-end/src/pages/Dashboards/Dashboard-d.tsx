@@ -193,21 +193,18 @@ const Dashboard: React.FC = () => {
     setEstimatedTime(Math.round(averageTime * remainingTests));
   }, [averageTime, remainingTests]);
 
-  // timer to count down the estimated time remaining
-  useEffect(() => {
-    if (estimatedTime > 0) {
-      const timer = setInterval(() => {
-        setEstimatedTime((prevEstimatedTime) => prevEstimatedTime - 1); // decrease number of seconds
-        setIsTimeUp(false);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    } else if (remainingTests > 0) {
-      setIsTimeUp(true); // ran out of time but tests still running
-    } else {
-      setIsTimeUp(false); // no more time because no tests are running
+  const vm = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/vm', {
+            method: 'POST',
+        });
+        const data = await response.json();
+        alert(data.message);
+    } catch (error) {
+        console.error("Error running VM tests:", error);
+        alert("Failed to run VM tests.");
     }
-  }, [estimatedTime]);
+  }
 
   return (
     <>
@@ -303,12 +300,20 @@ const Dashboard: React.FC = () => {
           <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">
             Test Application
           </h3>
+          <div className="flex gap-4">
           <button
             className="bg-primary text-white px-4 py-2 w-full rounded hover:bg-secondary"
             onClick={runTestRequest}
           >
-            Run Test
+            Run Test in Browsers
           </button>
+          <button
+            className="bg-primary text-white px-4 py-2 w-full rounded hover:bg-secondary"
+            onClick={vm}
+          >
+            Run Test with Virtual Machine
+          </button>
+          </div>
         </div>
 
         {/* Testing Schedule Card */}

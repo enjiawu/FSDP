@@ -21,6 +21,7 @@ const { updateTestCase } = require("./updateTestCase");
 const wss = require("./webSocketServer");
 const chatBot = require('./chatBot');
 const generateReport = require('./generateReport');
+const runTestsInVM = require("./VM");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -53,6 +54,8 @@ app.delete("/delete-testcase/:name/:id", deleteTestCase);
 app.post("/update-testcase", upload.single("file"), updateTestCase);
 app.post('/chatbot', chatBot);
 app.post('/generateReport', generateReport);
+app.post("/vm", runTestsInVM);
+
 
 
 testCaseUpdate();
