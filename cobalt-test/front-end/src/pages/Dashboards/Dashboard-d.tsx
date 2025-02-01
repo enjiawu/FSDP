@@ -240,7 +240,7 @@ const Dashboard: React.FC = () => {
                       className="flex justify-between items-center"
                     >
                       <span>{user.username}</span>
-                      {user.role === 'admin' || user.role === 'app_owner' ? (
+                      {user.role === 'admin' || (user.appsOwned !== undefined && user.appsOwned.includes(decodedAppTitle)) ? (
                         <span className="text-green-500">
                           {user.role === 'admin' ? 'Admin' : 'App Owner'}
                         </span>
