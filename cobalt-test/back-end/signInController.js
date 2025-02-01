@@ -39,7 +39,9 @@ const signIn = async (req, res) => {
       id: user._id, 
       username: user.username, 
       role: user.role, 
-      assignedApps: user.assignedApps}, 'jwt_secret', { expiresIn: '1h' });
+      assignedApps: user.assignedApps,
+      appsOwned: user.appsOwned,
+    }, 'jwt_secret', { expiresIn: '1h' });
     console.log("Token: ", jwt.decode(token));
     return res.status(200).json({ message: 'Login successful', token });
 
