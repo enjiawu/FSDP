@@ -2,19 +2,24 @@ const { MongoClient } = require("mongodb");
 const WebSocket = require("ws");
 const uri =
     "mongodb+srv://josephbwanzj:josephwan1*@testresults.szcjd.mongodb.net/";
-const client = new MongoClient(uri);
+const client = new MongoClient(uri); // create new mongoclient to make connections to DB
 
 const getDashboard = async (req, res, wss) => {
     try {
+        // connect to the database
         await client.connect();
         console.log("Connected to Dashboard Stream");
 
         const database = client.db("app_test_results");
         const collection = database.collection("testResults");
 
+        // create change stream to watch testResults collection in app_test_results DB
         const changeStream = collection.watch();
 
+        // when data change is detected
         changeStream.on("change", async (next) => {
+            // ----------------------------------------------------------
+            // test case statuses data (pie chart)
             const statuses = await collection
                 .aggregate([
                     {
@@ -38,7 +43,7 @@ const getDashboard = async (req, res, wss) => {
                 return res.status(200).json([]);
             }
 
-            // Format the response as per your chart data
+            // Format the response as per chart data
             const formattedStatuses = statuses.map((status) => {
                 let color;
                 switch (status._id) {
@@ -64,6 +69,8 @@ const getDashboard = async (req, res, wss) => {
                 };
             });
 
+            // ----------------------------------
+            // browser status data (bar chart)
             const pipeline = [
                 {
                     $group: {
@@ -87,7 +94,7 @@ const getDashboard = async (req, res, wss) => {
                 //safari: [0, 0, 0],
             };
 
-            // Map the results into the format we need
+            // Map the results into the format needed
             results.forEach((result) => {
                 const { browser, status } = result._id;
                 const statusIndex =
@@ -100,13 +107,13 @@ const getDashboard = async (req, res, wss) => {
                 }
             });
 
+            // send the test case status and browser status through the websocket in JSON
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(
                         JSON.stringify({
                             overall: formattedStatuses,
                             browser: browserStatusData,
-                            // testCases: mappedTestCases,
                         })
                     );
                 }
@@ -114,19 +121,20 @@ const getDashboard = async (req, res, wss) => {
         });
 
         const pendingCollection = database.collection("pendingTests");
+
+        // create change stream to watch pendingTests collection in app_test_results DB
         const pendingStream = pendingCollection.watch();
 
+        // when data change is detected
         pendingStream.on("change", async (next) => {
+            // count number of documents in pending collection
             const remaining = await pendingCollection.countDocuments();
 
+            // send the number through websocket
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(
                         JSON.stringify({
-                            // overall: formattedStatuses,
-                            // browser: browserStatusData,
-                            // testCases: mappedTestCases,
-                            // average: average,
                             remaining: remaining,
                         })
                     );
@@ -138,13 +146,13 @@ const getDashboard = async (req, res, wss) => {
 
         // Fetch test cases from the 'app_testcases' database
         const testCasesCollection = testCasesDb.collection("testCasesXYZ");
+
+        // create change stream to watch testCasesXYZ collection in app_testcases DB
         const testCasesChangeStream = testCasesCollection.watch();
 
+        // when data change detected
         testCasesChangeStream.on("change", async (next) => {
             const testCases = await testCasesCollection.find({}).toArray();
-
-            // Fetch the latest test case statuses from the 'app_test_results' database
-            // const testResultsCollection = database.collection('testResults');
 
             // Aggregate to find the latest status for each testID
             const latestResults = await collection
@@ -183,25 +191,28 @@ const getDashboard = async (req, res, wss) => {
                 errorMessage: errLogMap[testCase.testID],
             }));
 
-            // Send the mapped test cases as the response
-            // res.json(mappedTestCases);
-
+            // retrieve all time taken values from collection
             const timeTaken = testCases.map((testCase) => testCase.TimeTaken);
 
+            // add up all time taken from array
             let totalTimeTaken = 0;
             for (const time of timeTaken) {
                 totalTimeTaken += time;
             }
 
+            // get total number of test cases
             const totalTestCases = await testCasesCollection.countDocuments();
-            const average = totalTimeTaken / totalTestCases;
 
+            // calculate average time taken, rounding off to 2dp
+            const average = Number(
+                (totalTimeTaken / totalTestCases).toFixed(2)
+            );
+
+            // send test case data and average time taken through websocket
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(
                         JSON.stringify({
-                            // overall: formattedStatuses,
-                            // browser: browserStatusData,
                             testCases: mappedTestCases,
                             average: average,
                         })

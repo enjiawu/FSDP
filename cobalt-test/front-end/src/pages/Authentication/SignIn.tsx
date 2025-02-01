@@ -72,7 +72,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       }
     } catch (fallbackError) {
       console.error('Fallback endpoint error:', fallbackError);
-      alert('Both primary and fallback endpoints failed. Please try again later.');
+      alert('An error occurred while logging in.');
     }
    }
   };
