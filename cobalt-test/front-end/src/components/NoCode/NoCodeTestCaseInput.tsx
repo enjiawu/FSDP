@@ -76,8 +76,8 @@ const NoCodeTestCaseInput: React.FC<NoCodeTestCaseInputProps> = ({ setGeneratedT
     const navigate = useNavigate();
 
     const applicationOptions = [ // TODO:: Replace with actual data
-        { value: "Dashboard-1", label: "Dashboard 1" },
-        { value: "XYZ-Bank", label: "XYZ Bank" },
+        { value: "Application 1", label: "Application 1" },
+        { value: "Application 2", label: "Application 2" },
     ];
 
     const handleGenerateTestCase = async () => {
