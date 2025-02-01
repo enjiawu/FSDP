@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import AllTestCasesTable from "../components/Tables/AllTestCasesTable";
+import AllTestCasesTable from "../components/Tables/AllTestCasesTable-d";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 
 interface AllApplicationResult {
@@ -14,13 +14,13 @@ const allApplicationTable: AllApplicationResult[] = [
   {
     id: 1,
     title: 'Application 1',
-    totalTestCases: 8,
+    totalTestCases: 9,
     successRate: 98,
   },
   {
     id: 2,
     title: 'Application 2',
-    totalTestCases: 14,
+    totalTestCases: 8,
     successRate: 90,
   },
 ];
