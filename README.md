@@ -44,7 +44,7 @@ CobaltTest is a full-stack application designed to streamline cross-browser regr
 - Completed Stage 1 Dashboard (fully functioning with actual data).
 - Added error logging (images, code, etc.).
 - Implemented a quick view of test cases, including descriptions, expected outputs, and steps taken.
-- Set up source control to track edits to test cases and created a public repository to manage test cases.
+- Set up source control to track edits to test cases and created a public repository to manage test cases. [GitHub Repository Link](https://github.com/enjiawu/OCBC_Applications)
 
 ### New Features
 - **No-Code Test Case Creation**: Enabled test case creation without writing code, simplifying the process for non-technical users.
