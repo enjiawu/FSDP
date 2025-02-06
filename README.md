@@ -20,7 +20,7 @@
 
 ## About CobaltTest
 
-CobaltTest is a full-stack application designed to streamline cross-browser regression testing. It supports the automation of up to 500 Selenium test cases, ensuring reliable performance across browsers such as Chrome, Firefox, and Edge. CobaltTest is tailored for testing critical applications, including consumer internet banking and internal HR systems.
+CobaltTest is a full-stack application designed to streamline cross-browser regression testing. It supports the automation of up to 500 testcafe test cases, ensuring reliable performance across browsers such as Chrome, Firefox, and Edge. CobaltTest is tailored for testing critical applications, including consumer internet banking and internal HR systems.
 
 ---
 
